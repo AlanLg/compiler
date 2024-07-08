@@ -84,7 +84,7 @@ ast_t *ast_new_declaration(ast_t *lvalue, ast_t *rvalue) {
 ast_t *ast_new_condition(ast_t *condition, ast_t *valid, ast_t *invalid) {
     ast_t *node = (ast_t*)malloc(sizeof(ast_t));
     if (node) {
-        node->type = AST_CONDITION
+        node->type = AST_CONDITION;
         node->branch.condition = condition;
         node->branch.valid = valid;
         node->branch.invalid = invalid;
