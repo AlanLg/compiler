@@ -1,5 +1,5 @@
-#ifndef SYNTAX_H
-#define SYNTAX_H
+#ifndef SYNTAX_ANALYSIS_H
+#define SYNTAX_ANALYSIS_H
 
 #include <stdio.h>
 #include <stdlib.h>
