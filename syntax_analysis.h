@@ -8,6 +8,29 @@
 #include "utils.h"
 
 typedef enum {
+  VAR_INTEGER,
+} var_type_e;
+
+typedef enum {
+  AST_EQUAL_TO,
+  AST_NOT_EQUAL_TO,
+  AST_GREATER_THAN,
+  AST_LESS_THAN,
+  AST_GREATER_THAN_OR_EQUAL_TO,
+  AST_LESS_THAN_OR_EQUAL_TO,
+  AST_LOGICAL_AND,
+  AST_LOGICAL_OR,
+  AST_ADDITION,
+  AST_SUBSTRACTION,
+  AST_MULTIPLICATION,
+  AST_DIVISION,
+} ast_binary_e;
+
+typedef enum {
+  AST_UNARY_MINUS,
+} ast_unary_e;
+
+typedef enum {
   AST_VOID,
   AST_INTEGER,
   AST_BINARY,
