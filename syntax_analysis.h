@@ -28,6 +28,8 @@ typedef enum {
 
 typedef enum {
   AST_UNARY_MINUS,
+  AST_INCREMENT,
+  AST_DECREMENT,
 } ast_unary_e;
 
 typedef enum {
