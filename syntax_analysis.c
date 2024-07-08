@@ -83,8 +83,6 @@ ast_t *ast_new_declaration(ast_t *lvalue, ast_t *rvalue) {
 
 ast_t *ast_new_condition(ast_t *condition, ast_t *valid, ast_t *invalid) {
     ast_t *node = (ast_t*)malloc(sizeof(ast_t));
-    if (node) {
-    }
     return node;
 }
 
@@ -108,6 +106,12 @@ ast_t *ast_new_return(ast_t *expr) {
 }
 
 ast_list_t *ast_list_new_node(ast_t *elem) {
+    ast_list_t *node = (ast_list_t *)malloc(sizeof(ast_t));
+    if (node) {
+        node->current = elem;
+        node->next = NULL;
+    }
+    return node;
 }
 
 ast_list_t *ast_list_add(ast_list_t **list, ast_t *elem) {

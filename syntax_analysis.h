@@ -48,15 +48,16 @@ typedef enum {
   AST_RETURN
 } ast_node_type_e;
 
+typedef struct ast_list_t {
+    struct ast_t *current;
+    struct ast_list_t *next;
+} ast_list_t;
+
 typedef struct ast_t {
   ast_node_type_e type;
   union {
     long integer;
-    struct {
-      struct ast_t *current;
-      struct ast_list_t *next;
-    } ast_list_t;
-
+    ast_list_t list;
     struct {
       char *name;
       var_type_e type;
