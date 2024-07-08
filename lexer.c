@@ -1,49 +1,49 @@
 #include "lexer.h"
 
 size_t length_alphanum_word(buffer_t *buffer) {
-  size_t res;
-  char c;
+  size_t result;
+  char character;
 
-  res = 0;
-  c = buf_getchar(buffer);
-  while (isalnum(c)) {
-    res++;
-    c = buf_getchar(buffer);
+  result = 0;
+  character = buf_getchar(buffer);
+  while (isalnum(character)) {
+    result++;
+    character = buf_getchar(buffer);
   }
-  buf_rollback(buffer, res);
-  return res;
+  buf_rollback(buffer, result);
+  return result;
 }
 
 size_t length_number_word(buffer_t *buffer) {
-  size_t res;
-  char c;
+  size_t result;
+  char character;
 
-  res = 0;
-  c = buf_getchar(buffer);
-  if (c == OPERATOR_MINUS) {
-    c = buf_getchar(buffer);
-    if (!isdigit(c))
+  result = 0;
+  character = buf_getchar(buffer);
+  if (character == OPERATOR_MINUS) {
+    character = buf_getchar(buffer);
+    if (!isdigit(character))
       return 0;
-    res++;
+    result++;
   }
-  while (isdigit(c)) {
-    res++;
-    c = buf_getchar(buffer);
+  while (isdigit(character)) {
+    result++;
+    character = buf_getchar(buffer);
   }
-  buf_rollback(buffer, res);
-  return res;
+  buf_rollback(buffer, result);
+  return result;
 }
 
 /**
  * Cette fonction doit retourner une chaîne de caractères si elle trouve une
- *suite de chiffres et/ou de lettres d’au moins 1 caractère. Si aucun caractère
- *lu ne correspond, le curseur doit retourner à sa position initiale Cette
- *fonction effectue un malloc pour créer la chaîne de caractères
+ * suite de chiffres et/ou de lettres d’au moins 1 caractère. Si aucun caractère
+ * lu ne correspond, le curseur doit retourner à sa position initiale Cette
+ * fonction effectue un malloc pour créer la chaîne de caractères
  **/
 char *lexer_getalphanum(buffer_t *buffer) {
   size_t length;
-  char *res;
-  char c;
+  char *result;
+  char character;
   size_t i;
   size_t white_space;
 
@@ -59,25 +59,25 @@ char *lexer_getalphanum(buffer_t *buffer) {
 
   // On crée la chaîne de caractère
   if (length) {
-    res = malloc(length + 1);
-    if (!res) {
+    result = malloc(length + 1);
+    if (!result) {
       buf_rollback(buffer, white_space);
       buf_unlock(buffer);
       return NULL;
     }
     i = 0;
     while (i < length) {
-      c = buf_getchar(buffer);
-      res[i++] = c;
+      character = buf_getchar(buffer);
+      result[i++] = character;
     }
-    res[length] = EOF;
+    result[length] = EOF;
   } else
     return NULL;
 
   // Libérer le buffer
   buf_unlock(buffer);
 
-  return res;
+  return result;
 }
 
 /**
@@ -86,8 +86,8 @@ char *lexer_getalphanum(buffer_t *buffer) {
  **/
 char *lexer_getalphanum_rollback(buffer_t *buffer) {
   size_t length;
-  char *res;
-  char c;
+  char *result;
+  char character;
   size_t i;
   size_t white_space;
 
@@ -103,18 +103,18 @@ char *lexer_getalphanum_rollback(buffer_t *buffer) {
 
   // On crée la chaîne de caractère
   if (length) {
-    res = malloc(length + 1);
-    if (!res) {
+    result = malloc(length + 1);
+    if (!result) {
       buf_rollback(buffer, white_space);
       buf_unlock(buffer);
       return NULL;
     }
     i = 0;
     while (i < length) {
-      c = buf_getchar(buffer);
-      res[i++] = c;
+      character = buf_getchar(buffer);
+      result[i++] = character;
     }
-    res[length] = EOF;
+    result[length] = EOF;
   } else
     return NULL;
 
@@ -124,7 +124,7 @@ char *lexer_getalphanum_rollback(buffer_t *buffer) {
   // Libérer le buffer
   buf_unlock(buffer);
 
-  return res;
+  return result;
 }
 
 /**
@@ -132,9 +132,9 @@ char *lexer_getalphanum_rollback(buffer_t *buffer) {
  * opérateur de votre langage (unaire ou binaire typiquement)
  **/
 char *lexer_getop(buffer_t *buffer) {
-  char *res;
+  char *result;
   int i;
-  char c;
+  char character;
   size_t white_space;
 
   // Lock le buffer pour lire les caractères
@@ -144,39 +144,40 @@ char *lexer_getop(buffer_t *buffer) {
   white_space = buf_skipblank(buffer);
 
   // Créer la chaîne de caractères pour l'opérateur
-  res = malloc(SIZE_MAX_OPERATOR + 1);
-  if (!res) {
+  result = malloc(SIZE_MAX_OPERATOR + 1);
+  if (!result) {
     buf_rollback(buffer, white_space);
     buf_unlock(buffer);
     return NULL;
   }
 
   // Lire les caractères de l'opérateur
-  c = buf_getchar(buffer);
-  if (c == OPERATOR_PLUS || c == OPERATOR_MINUS || c == OPERATOR_MULT ||
-      c == OPERATOR_DIV || c == OPERATOR_EQUAL || c == OPERATOR_SUP ||
-      c == OPERATOR_INF) {
+  character = buf_getchar(buffer);
+  if (character == OPERATOR_PLUS || character == OPERATOR_MINUS ||
+      character == OPERATOR_MULT || character == OPERATOR_DIV ||
+      character == OPERATOR_EQUAL || character == OPERATOR_SUP ||
+      character == OPERATOR_INF) {
     i = 0;
-    res[i++] = c;
+    result[i++] = character;
   } else {
     buf_rollback_and_unlock(buffer, i + white_space);
-    free(res);
+    free(result);
     return NULL;
   }
-  c = buf_getchar(buffer);
-  if ((res[0] == OPERATOR_EQUAL && c == OPERATOR_EQUAL) ||
-      (res[0] == OPERATOR_NEGATION && c == OPERATOR_EQUAL) ||
-      (res[0] == OPERATOR_INF && c == OPERATOR_EQUAL) ||
-      (res[0] == OPERATOR_SUP && c == OPERATOR_EQUAL))
-    res[i++] = c;
+  character = buf_getchar(buffer);
+  if ((result[0] == OPERATOR_EQUAL && character == OPERATOR_EQUAL) ||
+      (result[0] == OPERATOR_NEGATION && character == OPERATOR_EQUAL) ||
+      (result[0] == OPERATOR_INF && character == OPERATOR_EQUAL) ||
+      (result[0] == OPERATOR_SUP && character == OPERATOR_EQUAL))
+    result[i++] = character;
   else
     buf_rollback(buffer, 1);
 
   // Finaliser la chaine de caractère de l'opérateur et libérer le buffer
-  res[i] = EOF;
+  result[i] = EOF;
   buf_unlock(buffer);
 
-  return res;
+  return result;
 }
 
 /**
@@ -188,9 +189,9 @@ long lexer_getnumber(buffer_t *buffer) {
 
   size_t length;
   char *number_str;
-  char c;
+  char character;
   size_t i;
-  long res;
+  long result;
   size_t white_space;
 
   // Lock le buffer pour lire les caractères
@@ -213,15 +214,15 @@ long lexer_getnumber(buffer_t *buffer) {
     i = 0;
 
     // Vérifier si le nombre est négatif
-    c = buf_getchar(buffer);
-    if (c == OPERATOR_MINUS) {
-      number_str[i++] = c;
-      c = buf_getchar(buffer);
+    character = buf_getchar(buffer);
+    if (character == OPERATOR_MINUS) {
+      number_str[i++] = character;
+      character = buf_getchar(buffer);
     }
 
-    while (isdigit(c)) {
-      number_str[i++] = c;
-      c = buf_getchar(buffer);
+    while (isdigit(character)) {
+      number_str[i++] = character;
+      character = buf_getchar(buffer);
     }
 
     number_str[length] = EOF;
@@ -233,11 +234,11 @@ long lexer_getnumber(buffer_t *buffer) {
     return 0;
   }
 
-  res = strtol(number_str, NULL, 10);
+  result = strtol(number_str, NULL, 10);
   free(number_str);
 
   // Déverrouiller le buffer
   buf_unlock(buffer);
 
-  return res;
+  return result;
 }
