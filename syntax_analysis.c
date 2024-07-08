@@ -121,4 +121,16 @@ ast_list_t *ast_list_new_node(ast_t *elem) {
 }
 
 ast_list_t *ast_list_add(ast_list_t **list, ast_t *elem) {
+  ast_list_t *new_ast_list = ast_list_new_node(elem);
+  if (*list == NULL) {
+    *list = new_ast_list;
+  } else {
+    ast_list_t *temp_ast_list = *list;
+    while (temp_ast_list->next != NULL) {
+      temp_ast_list = temp_ast_list->next;
+    }
+    temp_ast_list->next = new_ast_list;
+  }
+  return new_ast_list;
 }
+
