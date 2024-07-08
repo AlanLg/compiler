@@ -3,14 +3,16 @@
 
 #include "syntax_analysis.h"
 
-typedef struct symbol_t {
-  struct symbol_t *current;
-  struct symbol_t *next;
-} symbol_t;
-
 typedef struct sym_type_t {
 
 } sym_type_t;
+
+typedef struct symbol_t {
+  char *name;
+  struct sym_type_t type;
+  struct ast_t *attributes;
+  struct symbol_t *next;
+} symbol_t;
 
 symbol_t * sym_new (char *name, sym_type_t type, ast_t *attributes);
 void sym_delete (symbol_t * sym);
