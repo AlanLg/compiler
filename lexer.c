@@ -41,21 +41,18 @@ size_t length_number_word(buffer_t *buffer) {
  * fonction effectue un malloc pour créer la chaîne de caractères
  **/
 char *lexer_getalphanum(buffer_t *buffer) {
-  size_t length;
   char *result;
   char character;
-  size_t i;
-  size_t white_space;
 
   // Lock le buffer pour lire les caractères
   buf_lock(buffer);
 
   // Skip les whites spaces
-  white_space = buf_skipblank(buffer);
+  size_t white_space = buf_skipblank(buffer);
 
   // On lit chaque caractère jusqu'à atteindre un caractère non alphanumérique
   // pour déterminer la taille de la chaine de caractère
-  length = length_alphanum_word(buffer);
+  size_t length = length_alphanum_word(buffer);
 
   // On crée la chaîne de caractère
   if (length) {
@@ -65,7 +62,7 @@ char *lexer_getalphanum(buffer_t *buffer) {
       buf_unlock(buffer);
       return NULL;
     }
-    i = 0;
+    size_t i = 0;
     while (i < length) {
       character = buf_getchar(buffer);
       result[i++] = character;
