@@ -51,6 +51,11 @@ typedef struct ast_t {
   union {
     long integer;
     struct {
+      struct ast_t *current;
+      struct ast_list_t *next;
+    } ast_list_t;
+
+    struct {
       char *name;
       var_type_e type;
     } var;
