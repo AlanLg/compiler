@@ -55,6 +55,7 @@ ast_t *ast_new_function(char *name, var_type_e return_type, ast_list_t *params, 
 ast_t *ast_new_comp_stmt(ast_list_t *stmts) {
     ast_t *node = (ast_t*)malloc(sizeof(ast_t));
     if (node) {
+
     }
     return node;
 }
@@ -83,6 +84,9 @@ ast_t *ast_new_condition(ast_t *condition, ast_t *valid, ast_t *invalid) {
 ast_t *ast_new_loop(ast_t *condition, ast_t *stmt) {
     ast_t *node = (ast_t*)malloc(sizeof(ast_t));
     if (node) {
+        node->type = AST_LOOP;
+        node->loop.condition = condition;
+        node->loop.stmt = stmt;
     }
     return node;
 }
@@ -90,6 +94,8 @@ ast_t *ast_new_loop(ast_t *condition, ast_t *stmt) {
 ast_t *ast_new_return(ast_t *expr) {
     ast_t *node = (ast_t*)malloc(sizeof(ast_t));
     if (node) {
+        node->type = AST_RETURN;
+        node->ret.expr = expr;
     }
     return node;
 }
