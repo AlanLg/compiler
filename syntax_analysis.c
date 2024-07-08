@@ -1,7 +1,7 @@
 #include "syntax_analysis.h"
 
 ast_t *ast_new_integer(long val) {
-  ast_t *node = (*ast_t)malloc(sizeof(ast_t));
+  ast_t *node = (ast_t*)malloc(sizeof(ast_t));
   if (node) {
     node->type = AST_INTEGER;
     node->integer = val;
@@ -10,7 +10,7 @@ ast_t *ast_new_integer(long val) {
 }
 
 ast_t *ast_new_variable(char *name, var_type_e type) {
-  ast_t *variable = (*ast_t)malloc(sizeof(ast_t));
+  ast_t *variable = (ast_t*)malloc(sizeof(ast_t));
   if (variable) {
     variable->type = AST_VARIABLE;
     variable->var.name = name;
@@ -50,4 +50,52 @@ ast_t *ast_new_function(char *name, var_type_e return_type, ast_list_t *params, 
         node->function.stmts = stmts;
     }
     return node;
+}
+
+ast_t *ast_new_comp_stmt(ast_list_t *stmts) {
+    ast_t *node = (ast_t*)malloc(sizeof(ast_t));
+    if (node) {
+    }
+    return node;
+}
+
+ast_t *ast_new_assignment(ast_t *lvalue, ast_t *rvalue) {
+    ast_t *node = (ast_t*)malloc(sizeof(ast_t));
+    if (node) {
+    }
+    return node;
+}
+
+ast_t *ast_new_declaration(ast_t *lvalue, ast_t *rvalue) {
+    ast_t *node = (ast_t*)malloc(sizeof(ast_t));
+    if (node) {
+    }
+    return node;
+}
+
+ast_t *ast_new_condition(ast_t *condition, ast_t *valid, ast_t *invalid) {
+    ast_t *node = (ast_t*)malloc(sizeof(ast_t));
+    if (node) {
+    }
+    return node;
+}
+
+ast_t *ast_new_loop(ast_t *condition, ast_t *stmt) {
+    ast_t *node = (ast_t*)malloc(sizeof(ast_t));
+    if (node) {
+    }
+    return node;
+}
+
+ast_t *ast_new_return(ast_t *expr) {
+    ast_t *node = (ast_t*)malloc(sizeof(ast_t));
+    if (node) {
+    }
+    return node;
+}
+
+ast_list_t *ast_list_new_node(ast_t *elem) {
+}
+
+ast_list_t *ast_list_add(ast_list_t **list, ast_t *elem) {
 }
