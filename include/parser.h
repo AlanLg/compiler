@@ -5,6 +5,7 @@
 #include "syntax_analysis.h"
 #include "symbols.h"
 
-ast_t parse_function(buffer_t *buffer);
+void parse(buffer_t *buffer);
+ast_t analyse_function(buffer_t *buffer);
 
 #endif
