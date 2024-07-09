@@ -3,12 +3,7 @@
 #include "../include/utils.h"
 
 int main(int argc, char **argv) {
-    if (argc < 2) {
-        fprintf(stderr, "Usage: %s <input_file>\n", argv[0]);
-        return 1;
-    }
-
-    FILE *file = fopen(argv[1], "r");
+    FILE *file = fopen("../test.intech", "r");
     if (!file) {
         perror("Failed to open file");
         return 1;
@@ -43,6 +38,9 @@ int main(int argc, char **argv) {
             free(alphanum);
             continue;
         }
+
+        // Read the next character to avoid infinite loop
+        buf_getchar(buffer);
     }
 
     fclose(file);
