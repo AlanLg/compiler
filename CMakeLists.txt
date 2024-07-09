@@ -10,11 +10,11 @@ add_executable(compiler
         include/lexer.h
         include/parser.h
         include/symbols.h
-        include/syntax_analysis.h
+        include/ast.h
         include/utils.h
         src/buffer.c
         src/lexer.c
         src/main.c
         src/symbols.c
-        src/syntax_analysis.c
+        src/ast.c
         src/utils.c)

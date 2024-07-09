@@ -2,7 +2,7 @@
 #define PARSER_H
 
 #include "lexer.h"
-#include "syntax_analysis.h"
+#include "ast.h"
 #include "symbols.h"
 
 void parse(buffer_t *buffer);

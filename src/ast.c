@@ -1,4 +1,4 @@
-#include "../include/syntax_analysis.h"
+#include "../include/ast.h"
 
 ast_t *ast_new_integer(long val) {
   ast_t *node = (ast_t*)malloc(sizeof(ast_t));

@@ -1,7 +1,7 @@
 #ifndef SYMBOLES_H
 #define SYMBOLES_H
 
-#include "syntax_analysis.h"
+#include "ast.h"
 #include <string.h>
 
 typedef enum {
