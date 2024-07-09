@@ -39,7 +39,6 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        // Read the next character to avoid infinite loop
         buf_getchar(buffer);
     }
 
