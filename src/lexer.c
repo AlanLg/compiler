@@ -37,30 +37,27 @@ size_t length_number_word(buffer_t *buffer) {
 
 char *lexer_getalphanum(buffer_t *buffer) {
     buf_lock(buffer);
-    size_t white_space = buf_skipblank(buffer);
-    size_t length = length_alphanum_word(buffer);
 
+    size_t length = length_alphanum_word(buffer);
     if (length == 0) {
-        buf_rollback(buffer, white_space);
-        buf_unlock(buffer);
+        buf_rollback_and_unlock(buffer, 2);
         return NULL;
     }
 
     char *result = malloc(length + 1);
     if (!result) {
-        buf_rollback(buffer, white_space);
-        buf_unlock(buffer);
+        perror("Failed to allocate memory for alphanum");
+        buf_rollback_and_unlock(buffer, 2);
         return NULL;
     }
 
-    for (size_t i = 0; i < length; i++) {
-        result[i] = buf_getchar(buffer);
-    }
+    buf_getnchar(buffer, result, length);
     result[length] = '\0';
 
     buf_unlock(buffer);
     return result;
 }
+
 
 char *lexer_getop(buffer_t *buffer) {
     buf_lock(buffer);

@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
         }
 
         long number = lexer_getnumber(buffer);
-        if (number != 0 || (number == 0 && buf_getchar_rollback(buffer) == '0')) {
+        if (number != 0 || buf_getchar_rollback(buffer) == '0' != 0) {
             printf("Number: %ld\n", number);
             continue;
         }
