@@ -17,4 +17,5 @@ add_executable(compiler
         src/main.c
         src/symbols.c
         src/ast.c
-        src/utils.c)
+        src/utils.c
+        src/parser.c)
