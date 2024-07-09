@@ -2,6 +2,7 @@
 #define SYMBOLES_H
 
 #include "syntax_analysis.h"
+#include <string.h>
 
 typedef enum {
   SYM_FUNCTION,

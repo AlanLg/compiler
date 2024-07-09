@@ -84,5 +84,11 @@ void sym_add(symbol_t **table, symbol_t *sym) {
 }
 
 symbol_t * sym_search(symbol_t *table, char *name) {
-
+  while(table != NULL) {
+    if(strcmp(table->name, name) == 0) {
+      return table;
+    }
+    table = table->next;
+  }
+  return NULL;
 }
