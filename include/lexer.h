@@ -11,8 +11,6 @@
 #include "buffer.h"
 #include "utils.h"
 
-#define EOF '\0'
-
 #define SIZE_MAX_OPERATOR 2
 
 #define OPERATOR_PLUS '+'
