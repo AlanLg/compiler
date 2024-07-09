@@ -18,7 +18,7 @@ void parse(buffer_t *buffer) {
     exit(1);
   }
 
-  ast_t result = analyse_function(buffer);
+      ast_t *result = analyze_function(buffer);
 
 }
 
@@ -34,5 +34,19 @@ void parse(buffer_t *buffer) {
      retourner l’AST pour la fonction “main”
     Fin
   */
-ast_t analyse_function(buffer_t *buffer) {
+  ast_t *analyze_function(buffer_t *buffer) {
+      return ast_new_function(lexer_getalphanum(buffer), analyze_return(buffer), analyze_parameters(buffer),
+                              analyze_function_body(buffer));
+}
+
+ast_list_t *analyze_parameters(buffer_t *buffer) {
+
+}
+
+var_type_e analyze_return(buffer_t *buffer) {
+
+}
+
+ast_list_t *analyze_function_body(buffer_t *buffer) {
+
 }
