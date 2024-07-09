@@ -1,10 +1,9 @@
 /* vim: set tabstop=4:softtabstop=4:shiftwidth=4 */
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
-#include "buffer.h"
-#include "utils.h"
+#include "../include/buffer.h"
+#include "../include/utils.h"
 
 void buf_init (buffer_t *buffer, FILE* fd)
 {

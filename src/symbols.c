@@ -1,4 +1,4 @@
-#include "symbols.h"
+#include "../include/symbols.h"
 
 symbol_t * sym_new(char *name, sym_type_e type, ast_t *attributes) {
     symbol_t *symbol = (symbol_t*)malloc(sizeof(symbol_t));

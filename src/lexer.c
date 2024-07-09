@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "../include/lexer.h"
 
 size_t length_alphanum_word(buffer_t *buffer) {
   size_t result;
