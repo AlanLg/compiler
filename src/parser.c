@@ -71,8 +71,42 @@ ast_list_t *analyze_parameters(buffer_t *buffer) {
         perror("missing ( for function parameters");
         exit(1);
     }
-    if (lexer_getalphanum(buffer))
-        return ast_list_new_node(ast_new_variable(lexer_getalphanum(buffer), VAR_INTEGER));
+
+    char comma_or_parenthesis;
+
+    buf_lock(buffer);
+    comma_or_parenthesis = buf_getchar(buffer);
+
+    if (comma_or_parenthesis == ')') {
+        return NULL;
+    }
+
+    buf_rollback(buffer, 1);
+
+    do {
+    char *parameter_type = lexer_getalphanum(buffer);
+
+    if (parameter_type) { // TODO: make sure parameter type is valid
+      perror("parameter type is not valid");
+      exit(1);
+    }
+
+    char *parameter_name = lexer_getalphanum(buffer);
+
+    if (sym_search(*table, parameter_name) != NULL) { // TODO: need to only check this functions scope
+      perror("parameter name is already taken");
+      exit(1);
+    }
+
+    comma_or_parenthesis = buf_getchar(buffer);
+    } while (comma_or_parenthesis == ',');
+
+    if (comma_or_parenthesis != ')') {
+      perror("missing ) at end of parameters");
+      exit(1);
+    }
+
+    return ast_list_new_node(ast_new_variable(lexer_getalphanum(buffer), VAR_INTEGER));
 }
 
 var_type_e analyze_return(buffer_t *buffer) {

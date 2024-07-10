@@ -5,7 +5,7 @@ symbol_t *sym_new(char *name, sym_type_e type, ast_t *ast_node) {
     if (symbol) {
     symbol->name = name;
     symbol->type = type;
-        symbol->ast_node = ast_node;
+    symbol->ast_node = ast_node;
     symbol->next = NULL;
     symbol->function_table = NULL;
     }
