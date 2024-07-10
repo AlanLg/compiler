@@ -1,6 +1,6 @@
 #include "../include/parser.h"
 
-symbol_t **table;
+symbol_t *table;
 
 /*
   Début
@@ -38,15 +38,33 @@ void parse(buffer_t *buffer) {
 */
 ast_t *analyze_function(buffer_t *buffer) {
     char *name = lexer_getalphanum(buffer);
-    ast_list_t *params = analyze_parameters(buffer);
+    symbol_t *params = analyze_parameters(buffer);
     var_type_e return_type = analyze_return(buffer);
-    ast_list_t *stmts = analyze_function_body(buffer);
-    ast_t *ast_function = ast_new_function(name, return_type, params, stmts);
+    symbol_t *stmts = analyze_function_body(buffer);
+
+    ast_list_t *stmts_ast = NULL;
+    symbol_t *temp_symb_stmts = stmts;
+    while (temp_symb_stmts != NULL) {
+        ast_list_add(&stmts_ast, temp_symb_stmts->ast_node);
+        temp_symb_stmts = temp_symb_stmts->next;
+    }
+
+    ast_list_t *params_ast = NULL;
+    symbol_t *temp_symb_params = params;
+    while (temp_symb_params != NULL) {
+        ast_list_add(&params_ast, temp_symb_params->ast_node);
+        temp_symb_params = temp_symb_params->next;
+    }
+
+    ast_t *ast_function = ast_new_function(name, return_type, params_ast, stmts_ast);
     symbol_t *function_symbol = sym_new(name, SYM_FUNCTION, ast_function);
-    function_symbol->function_table;
-    sym_add(table, function_symbol);
+    function_symbol->function_table = params;
+    sym_add(&function_symbol->function_table, stmts);
+    sym_add(&table, function_symbol);
+
     return ast_function;
 }
+
 
 /*
   Début
@@ -84,7 +102,7 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
 
     buf_rollback(buffer, 1);
 
-    symbol_t **parameter_sym;
+    symbol_t *parameter_sym = NULL;
 
     do {
         char *parameter_type = lexer_getalphanum(buffer);
@@ -98,9 +116,9 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
         char *parameter_name = lexer_getalphanum(buffer);
         ast_t *ast = ast_new_variable(parameter_name, type);
 
-        sym_add(parameter_sym, sym_new(parameter_name, SYM_PARAM, ast));
+        sym_add(&parameter_sym, sym_new(parameter_name, SYM_PARAM, ast));
 
-        if (sym_search(*table, parameter_name) != NULL) { // TODO: need to only check this functions scope
+        if (sym_search(table, parameter_name) != NULL) { // TODO: need to only check this functions scope
           perror("parameter name is already taken");
           exit(1);
         }
@@ -113,7 +131,7 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
       exit(1);
     }
 
-    return *parameter_sym;
+    return parameter_sym;
 }
 
 var_type_e analyze_return(buffer_t *buffer) {
