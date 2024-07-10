@@ -15,12 +15,6 @@ typedef enum {
   UNKNOWN,
 } var_type_e;
 
-const char* var_type_strings[] = {
-        "entier",
-        "bool",
-        "rien"
-};
-
 typedef enum {
   AST_EQUAL_TO,
   AST_NOT_EQUAL_TO,

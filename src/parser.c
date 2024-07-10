@@ -1,4 +1,5 @@
 #include "../include/parser.h"
+#include <stdio.h>
 
 symbol_t *table;
 
@@ -86,6 +87,7 @@ ast_t *analyze_function(buffer_t *buffer) {
   Fin
 */
 symbol_t *analyze_parameters(buffer_t *buffer) {
+    printf("analyzing params");
     if (buf_getchar(buffer) != '(') {
         perror("missing ( for function parameters");
         exit(1);
@@ -93,19 +95,25 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
 
     char comma_or_parenthesis;
 
+    printf("locking buffer");
     buf_lock(buffer);
     comma_or_parenthesis = buf_getchar(buffer);
 
+    printf("checking if )");
     if (comma_or_parenthesis == ')') {
         return NULL;
     }
 
+    printf("rollback");
     buf_rollback(buffer, 1);
 
     symbol_t *parameter_symbols = NULL;
 
+    printf("starting do while");
     do {
         char *parameter_type_name = lexer_getalphanum(buffer);
+
+        printf("type: %s", parameter_type_name);
 
         var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
         if (parameter_type == UNKNOWN) {
@@ -115,6 +123,8 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
 
         char *parameter_name = lexer_getalphanum(buffer);
         ast_t *ast = ast_new_variable(parameter_name, parameter_type);
+
+        printf("name: %s", parameter_type_name);
 
         sym_add(&parameter_symbols, sym_new(parameter_name, SYM_PARAM, ast));
 

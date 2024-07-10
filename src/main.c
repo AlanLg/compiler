@@ -1,8 +1,9 @@
 #include "../include/buffer.h"
-#include "../include/lexer.h"
-#include "../include/utils.h"
+#include "../include/parser.h"
+#include <stdio.h>
 
 int main(int argc, char **argv) {
+    printf("testing\n");
     FILE *file = fopen("../test.intech", "r");
     if (!file) {
         perror("Failed to open file");
@@ -18,29 +19,7 @@ int main(int argc, char **argv) {
 
     buf_init(buffer, file);
 
-    while (!buf_eof(buffer)) {
-        char *op = lexer_getop(buffer);
-        if (op) {
-            printf("Operator: %s\n", op);
-            free(op);
-            continue;
-        }
-
-        long number = lexer_getnumber(buffer);
-        if (number != 0 || buf_getchar_rollback(buffer) == '0' != 0) {
-            printf("Number: %ld\n", number);
-            continue;
-        }
-
-        char *alphanum = lexer_getalphanum(buffer);
-        if (alphanum) {
-            printf("Alphanum: %s\n", alphanum);
-            free(alphanum);
-            continue;
-        }
-
-        buf_getchar(buffer);
-    }
+    analyze_parameters(buffer);
 
     fclose(file);
     free(buffer);
