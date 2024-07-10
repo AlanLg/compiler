@@ -1,68 +1,74 @@
-#include "../include/lexer.h"
+#include "../include/buffer.h"
+#include "lexer.h"
+#include <ctype.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
 
-#define MAX_OPERATOR_LENGTH 2
-
-size_t length_alphanum_word(buffer_t *buffer) {
-    size_t result = 0;
-    char character = buf_getchar(buffer);
-
-    while (isalnum(character) || character == '_') {
-        result++;
-        character = buf_getchar(buffer);
-    }
-    buf_rollback(buffer, result + 1);
-    return result;
+bool is_alphanum(char c) {
+    return isalnum(c);
 }
 
-size_t length_number_word(buffer_t *buffer) {
-    size_t result = 0;
-    char character = buf_getchar(buffer);
+bool is_alpha(char c) {
+    return isalpha(c);
+}
 
-    if (character == OPERATOR_MINUS) {
-        result++;
-        character = buf_getchar(buffer);
-        if (!isdigit(character)) {
-            buf_rollback(buffer, 2);
-            return 0;
-        }
-    }
+bool is_operator(char c) {
+    return c == '=' || c == '<' || c == '>' || c == '&' || c == '|';
+}
 
-    while (isdigit(character)) {
-        result++;
-        character = buf_getchar(buffer);
+bool is_punctuation(char c) {
+    return ispunct(c) && !is_operator(c);
+}
+
+bool is_digit(char c) {
+    return isdigit(c);
+}
+
+char *lexer_getalpha(buffer_t *buffer) {
+    static char ident[256];
+    size_t idx = 0;
+
+    buf_skipblank(buffer);
+    buf_lock(buffer);
+
+    char c = buf_getchar(buffer);
+    while (is_alphanum(c)) {
+        ident[idx++] = c;
+        c = buf_getchar(buffer);
     }
-    buf_rollback(buffer, result + 1);
-    return result;
+    buf_rollback(buffer, 1);
+    buf_unlock(buffer);
+
+    ident[idx] = '\0';
+
+    return ident;
 }
 
 char *lexer_getalphanum(buffer_t *buffer) {
+    static char ident[256];
+    size_t idx = 0;
+
+    buf_skipblank(buffer);
     buf_lock(buffer);
 
-    size_t length = length_alphanum_word(buffer);
-    if (length == 0) {
-        buf_rollback_and_unlock(buffer, 2);
-        return NULL;
+    char c = buf_getchar(buffer);
+    while (is_alpha(c)) {
+        ident[idx++] = c;
+        c = buf_getchar(buffer);
     }
-
-    char *result = malloc(length + 1);
-    if (!result) {
-        perror("Failed to allocate memory for alphanum");
-        buf_rollback_and_unlock(buffer, 2);
-        return NULL;
-    }
-
-    buf_getnchar(buffer, result, length);
-    result[length] = '\0';
-
+    buf_rollback(buffer, 1); // Rewind last non-alphabetic character
     buf_unlock(buffer);
-    return result;
+
+    ident[idx] = '\0';
+
+    return ident;
 }
 
-
 char *lexer_getop(buffer_t *buffer) {
+    buf_skipblank(buffer);
     buf_lock(buffer);
-    size_t white_space = buf_skipblank(buffer);
-    char *result = malloc(MAX_OPERATOR_LENGTH + 1);
+    char *result = malloc(3);
     if (!result) {
         buf_unlock(buffer);
         return NULL;
@@ -77,7 +83,7 @@ char *lexer_getop(buffer_t *buffer) {
             character == OPERATOR_AND || character == OPERATOR_OR) {
         result[i++] = character;
     } else {
-        buf_rollback(buffer, white_space + 1);
+        buf_rollback(buffer, 1);
         buf_unlock(buffer);
         free(result);
         return NULL;
@@ -102,40 +108,37 @@ char *lexer_getop(buffer_t *buffer) {
     return result;
 }
 
-long lexer_getnumber(buffer_t *buffer) {
+char lexer_getchar(buffer_t *buffer) {
+    buf_skipblank(buffer);
     buf_lock(buffer);
-    size_t white_space = buf_skipblank(buffer);
-    size_t length = length_number_word(buffer);
 
-    if (length == 0) {
-        buf_rollback(buffer, white_space);
+    char c = buf_getchar(buffer);
+    if (is_punctuation(c)) {
         buf_unlock(buffer);
-        return 0;
-    }
-
-    char *number_str = malloc(length + 1);
-    if (!number_str) {
-        buf_rollback(buffer, white_space);
+        return c;
+    } else {
+        buf_rollback(buffer, 1); // Rewind last non-punctuation character
         buf_unlock(buffer);
-        return 0;
+        return '\0';
     }
+}
 
-    size_t i = 0;
-    char character = buf_getchar(buffer);
-    if (character == OPERATOR_MINUS) {
-        number_str[i++] = character;
-        character = buf_getchar(buffer);
+char *lexer_getnumber(buffer_t *buffer) {
+    static char number[256];
+    size_t idx = 0;
+
+    buf_skipblank(buffer);
+    buf_lock(buffer);
+
+    char c = buf_getchar(buffer);
+    while (is_digit(c)) {
+        number[idx++] = c;
+        c = buf_getchar(buffer);
     }
-
-    while (isdigit(character)) {
-        number_str[i++] = character;
-        character = buf_getchar(buffer);
-    }
-    number_str[i] = '\0';
-
-    buf_rollback(buffer, 1);
-    long result = strtol(number_str, NULL, 10);
-    free(number_str);
+    buf_rollback(buffer, 1); // Rewind last non-digit character
     buf_unlock(buffer);
-    return result;
+
+    number[idx] = '\0';
+
+    return number;
 }

@@ -1,10 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include <ctype.h>
-#include <stdlib.h>
-#include "buffer.h"
-
+#include "../include/buffer.h"
 // Define operator characters
 #define OPERATOR_PLUS '+'
 #define OPERATOR_MINUS '-'
@@ -17,11 +14,24 @@
 #define OPERATOR_AND '&'
 #define OPERATOR_OR '|'
 
-size_t length_alphanum_word(buffer_t *buffer);
+bool is_alphanum(char c);
 
-size_t length_number_word(buffer_t *buffer);
+bool is_alpha(char c);
+
+bool is_operator(char c);
+
+bool is_punctuation(char c);
+
+bool is_digit(char c);
+
+char *lexer_getalpha(buffer_t *buffer);
+
 char *lexer_getalphanum(buffer_t *buffer);
-char *lexer_getop(buffer_t *buffer);
-long lexer_getnumber(buffer_t *buffer);
 
-#endif
+char *lexer_getop(buffer_t *buffer);
+
+char lexer_getchar(buffer_t *buffer);
+
+char *lexer_getnumber(buffer_t *buffer);
+
+#endif // LEXER_H

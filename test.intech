@@ -3,9 +3,9 @@ fonction main () : rien {
     entier b;
     a = 1;
 
-    si (a < 2) {
-        b= a * 2;
-    } sinon si (a > 2) {
+    si (a <= 2) {
+        b = a * 2;
+    } sinon si (a >= 2 || b == 4) {
         b = 2;
     } sinon {
         a = 3;
