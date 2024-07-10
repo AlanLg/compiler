@@ -1,5 +1,15 @@
 #include "../include/ast.h"
 
+var_type_e get_var_type_from_string(const char* var_type_string) {
+    for (int i = 0; i < sizeof(var_type_strings) / sizeof(var_type_strings[0]); ++i) {
+        if (strcmp(var_type_string, var_type_strings[i]) == 0) {
+            return (var_type_e)i;
+        }
+    }
+    return UNKNOWN;
+}
+
+
 ast_t *ast_new_integer(long val) {
   ast_t *node = (ast_t*)malloc(sizeof(ast_t));
   if (node) {

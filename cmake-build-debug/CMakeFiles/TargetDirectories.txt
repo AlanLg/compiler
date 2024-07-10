@@ -1,0 +1,3 @@
+/Users/gregp/CLionProjects/compiler/cmake-build-debug/CMakeFiles/compiler.dir
+/Users/gregp/CLionProjects/compiler/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/gregp/CLionProjects/compiler/cmake-build-debug/CMakeFiles/rebuild_cache.dir

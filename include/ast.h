@@ -3,13 +3,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "buffer.h"
 #include "utils.h"
 
 typedef enum {
   VAR_INTEGER,
+  UNKNOWN,
 } var_type_e;
+
+const char* var_type_strings[] = {
+        "VAR_INTEGER"
+};
 
 typedef enum {
   AST_EQUAL_TO,
@@ -131,5 +137,6 @@ ast_t *ast_new_loop(ast_t *condition, ast_t *stmt);
 ast_t *ast_new_return(ast_t *expr);
 ast_list_t *ast_list_new_node(ast_t *elem);
 ast_list_t *ast_list_add(ast_list_t **list, ast_t *elem);
+var_type_e get_var_type_from_string(const char* var_type_string);
 
 #endif

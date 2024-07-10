@@ -34,17 +34,20 @@ void parse(buffer_t *buffer) {
      retourner l’AST pour la fonction “main”
     Fin
   */
-  ast_t *analyze_function(buffer_t *buffer) {
-      return ast_new_function(lexer_getalphanum(buffer), analyze_return(buffer), analyze_parameters(buffer),
-                              analyze_function_body(buffer));
+ast_t *analyze_function(buffer_t *buffer) {
+  return ast_new_function(lexer_getalphanum(buffer), analyze_return(buffer), analyze_parameters(buffer),analyze_function_body(buffer));
 }
 
 ast_list_t *analyze_parameters(buffer_t *buffer) {
-
+    return ast_list_new_node(ast_new_variable(lexer_getalphanum(buffer), VAR_INTEGER));
 }
 
 var_type_e analyze_return(buffer_t *buffer) {
-
+    if(buf_getchar(buffer) != ':') {
+        perror("missing : for function return type");
+        exit(1);
+    }
+    return get_var_type_from_string(lexer_getalphanum(buffer));
 }
 
 ast_list_t *analyze_function_body(buffer_t *buffer) {
