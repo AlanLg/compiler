@@ -10,12 +10,14 @@
 
 typedef enum {
   VAR_INTEGER,
-    VAR_VOID,
+  VAR_BOOL,
+  VAR_VOID,
   UNKNOWN,
 } var_type_e;
 
 const char* var_type_strings[] = {
         "entier",
+        "bool",
         "rien"
 };
 

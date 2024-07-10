@@ -102,23 +102,23 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
 
     buf_rollback(buffer, 1);
 
-    symbol_t *parameter_sym = NULL;
+    symbol_t *parameter_symbols = NULL;
 
     do {
-        char *parameter_type = lexer_getalphanum(buffer);
+        char *parameter_type_name = lexer_getalphanum(buffer);
 
-        var_type_e type; // TODO: need to fetch this somehow
-        if (parameter_type) { // TODO: make sure parameter type is valid
+        var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
+        if (parameter_type == UNKNOWN) {
           perror("parameter type is not valid");
           exit(1);
         }
 
         char *parameter_name = lexer_getalphanum(buffer);
-        ast_t *ast = ast_new_variable(parameter_name, type);
+        ast_t *ast = ast_new_variable(parameter_name, parameter_type);
 
-        sym_add(&parameter_sym, sym_new(parameter_name, SYM_PARAM, ast));
+        sym_add(&parameter_symbols, sym_new(parameter_name, SYM_PARAM, ast));
 
-        if (sym_search(table, parameter_name) != NULL) { // TODO: need to only check this functions scope
+        if (sym_search(parameter_symbols, parameter_name) != NULL) {
           perror("parameter name is already taken");
           exit(1);
         }
@@ -131,7 +131,7 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
       exit(1);
     }
 
-    return parameter_sym;
+    return parameter_symbols;
 }
 
 var_type_e analyze_return(buffer_t *buffer) {
