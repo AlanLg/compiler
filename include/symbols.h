@@ -13,7 +13,7 @@ typedef enum {
 typedef struct symbol_t {
   char *name;
   sym_type_e type;
-  ast_t *attributes;
+    ast_t *ast_node;
   struct symbol_t *function_table;
   struct symbol_t *next;
 } symbol_t;

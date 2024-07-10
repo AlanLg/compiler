@@ -1,11 +1,11 @@
 #include "../include/symbols.h"
 
-symbol_t * sym_new(char *name, sym_type_e type, ast_t *attributes) {
+symbol_t *sym_new(char *name, sym_type_e type, ast_t *ast_node) {
     symbol_t *symbol = (symbol_t*)malloc(sizeof(symbol_t));
     if (symbol) {
     symbol->name = name;
     symbol->type = type;
-    symbol->attributes = attributes;
+        symbol->ast_node = ast_node;
     symbol->next = NULL;
     symbol->function_table = NULL;
     }
@@ -23,8 +23,8 @@ void sym_delete(symbol_t **sym) {
         if (current_symbol->name != NULL) {
             free(current_symbol->name);
         }
-        if (current_symbol->attributes != NULL) {
-            free(current_symbol->attributes);
+        if (current_symbol->ast_node != NULL) {
+            free(current_symbol->ast_node);
         }
         if (current_symbol->function_table != NULL) {
             sym_delete(&(current_symbol->function_table));
@@ -48,7 +48,7 @@ void sym_remove(symbol_t **table, symbol_t *sym) {
     if (current == sym) {
         *table = current->next;
         free(current->name);
-        free(current->attributes);
+        free(current->ast_node);
         free(current);
         return;
     }
@@ -67,7 +67,7 @@ void sym_remove(symbol_t **table, symbol_t *sym) {
     }
 
     free(current->name);
-    free(current->attributes);
+    free(current->ast_node);
     free(current);
 }
 
