@@ -84,22 +84,28 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
 
     buf_rollback(buffer, 1);
 
+    symbol_t **parameter_sym;
+
     do {
-    char *parameter_type = lexer_getalphanum(buffer);
+        char *parameter_type = lexer_getalphanum(buffer);
 
-    if (parameter_type) { // TODO: make sure parameter type is valid
-      perror("parameter type is not valid");
-      exit(1);
-    }
+        var_type_e type; // TODO: need to fetch this somehow
+        if (parameter_type) { // TODO: make sure parameter type is valid
+          perror("parameter type is not valid");
+          exit(1);
+        }
 
-    char *parameter_name = lexer_getalphanum(buffer);
+        char *parameter_name = lexer_getalphanum(buffer);
+        ast_t *ast = ast_new_variable(parameter_name, type);
 
-    if (sym_search(*table, parameter_name) != NULL) { // TODO: need to only check this functions scope
-      perror("parameter name is already taken");
-      exit(1);
-    }
+        sym_add(parameter_sym, sym_new(parameter_name, SYM_PARAM, ast));
 
-    comma_or_parenthesis = buf_getchar(buffer);
+        if (sym_search(*table, parameter_name) != NULL) { // TODO: need to only check this functions scope
+          perror("parameter name is already taken");
+          exit(1);
+        }
+
+        comma_or_parenthesis = buf_getchar(buffer);
     } while (comma_or_parenthesis == ',');
 
     if (comma_or_parenthesis != ')') {
@@ -107,7 +113,7 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
       exit(1);
     }
 
-    return ast_list_new_node(ast_new_variable(lexer_getalphanum(buffer), VAR_INTEGER));
+    return *parameter_sym;
 }
 
 var_type_e analyze_return(buffer_t *buffer) {
