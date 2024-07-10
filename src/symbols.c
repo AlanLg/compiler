@@ -3,11 +3,11 @@
 symbol_t *sym_new(char *name, sym_type_e type, ast_t *ast_node) {
     symbol_t *symbol = (symbol_t*)malloc(sizeof(symbol_t));
     if (symbol) {
-    symbol->name = name;
-    symbol->type = type;
-    symbol->ast_node = ast_node;
-    symbol->next = NULL;
-    symbol->function_table = NULL;
+        symbol->name = name;
+        symbol->type = type;
+        symbol->ast_node = ast_node;
+        symbol->next = NULL;
+        symbol->function_table = NULL;
     }
 
   return symbol;

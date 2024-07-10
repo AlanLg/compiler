@@ -43,6 +43,7 @@ ast_t *analyze_function(buffer_t *buffer) {
     ast_list_t *stmts = analyze_function_body(buffer);
     ast_t *ast_function = ast_new_function(name, return_type, params, stmts);
     symbol_t *function_symbol = sym_new(name, SYM_FUNCTION, ast_function);
+    function_symbol->function_table;
     sym_add(table, function_symbol);
     return ast_function;
 }
@@ -66,7 +67,7 @@ ast_t *analyze_function(buffer_t *buffer) {
     retourner la liste des paramètres
   Fin
 */
-ast_list_t *analyze_parameters(buffer_t *buffer) {
+symbol_t *analyze_parameters(buffer_t *buffer) {
     if (buf_getchar(buffer) != '(') {
         perror("missing ( for function parameters");
         exit(1);
@@ -122,5 +123,5 @@ var_type_e analyze_return(buffer_t *buffer) {
     return return_type;
 }
 
-ast_list_t *analyze_function_body(buffer_t *buffer) {
+symbol_t *analyze_function_body(buffer_t *buffer) {
 }
