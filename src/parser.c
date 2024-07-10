@@ -1,5 +1,7 @@
 #include "../include/parser.h"
 
+symbol_t symbols;
+
   /*
     Début
      répéter
@@ -37,9 +39,32 @@ void parse(buffer_t *buffer) {
 ast_t *analyze_function(buffer_t *buffer) {
   return ast_new_function(lexer_getalphanum(buffer), analyze_return(buffer), analyze_parameters(buffer),analyze_function_body(buffer));
 }
-
+/*
+  Début
+    analyse du prochain symbole de ponctuation
+    si ce n’est pas ‘(‘,
+    produire une erreur
+    répéter indéfiniment
+    analyse du prochain lexème
+    si ce n’est pas un type valide,
+    produire une erreur
+    analyse du prochain lexème, qui sera le nom du paramètre
+    vérification de l’inexistance du lexème dans la table des symboles
+    si le symbole n’existe pas, l’ajouter dans la table des symboles
+    créer l’AST correspondant à la variable
+    ajouter l’AST à la liste des paramètres
+    si le prochain symbole de ponctuation est ‘,’, continuer
+    sinon si c’est ‘)’, arrêter
+    retourner la liste des paramètres
+  Fin
+*/
 ast_list_t *analyze_parameters(buffer_t *buffer) {
-    return ast_list_new_node(ast_new_variable(lexer_getalphanum(buffer), VAR_INTEGER));
+  if (buf_getchar(buffer) != '(') {
+    perror("missing ( for function parameters");
+    exit(1);
+  }
+  if (lexer_getalphanum(buffer))
+  return ast_list_new_node(ast_new_variable(lexer_getalphanum(buffer), VAR_INTEGER));
 }
 
 var_type_e analyze_return(buffer_t *buffer) {
