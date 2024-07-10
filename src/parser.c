@@ -47,9 +47,13 @@ var_type_e analyze_return(buffer_t *buffer) {
         perror("missing : for function return type");
         exit(1);
     }
-    return get_var_type_from_string(lexer_getalphanum(buffer));
+    var_type_e return_type = get_var_type_from_string(lexer_getalphanum(buffer));
+    if (return_type == UNKNOWN) {
+        perror("unknown type for function return type");
+        exit(1);
+    }
+    return return_type;
 }
 
 ast_list_t *analyze_function_body(buffer_t *buffer) {
-
 }
