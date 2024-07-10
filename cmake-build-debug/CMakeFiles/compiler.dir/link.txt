@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/compiler.dir/src/buffer.c.o CMakeFiles/compiler.dir/src/lexer.c.o CMakeFiles/compiler.dir/src/main.c.o CMakeFiles/compiler.dir/src/symbols.c.o CMakeFiles/compiler.dir/src/ast.c.o CMakeFiles/compiler.dir/src/utils.c.o CMakeFiles/compiler.dir/src/parser.c.o -o compiler
