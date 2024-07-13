@@ -3,29 +3,34 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdlib.h>
 
-bool is_alphanum(char c) {
-    return isalnum(c);
-}
-
-bool is_alpha(char c) {
-    return isalpha(c);
-}
+const char *keywords[] = {"fonction", "rien", "entier", "si", "sinon", "tantque"};
 
 bool is_operator(char c) {
-    return c == '=' || c == '<' || c == '>' || c == '&' || c == '|';
+    return c == OPERATOR_PLUS || c == OPERATOR_MINUS || c == OPERATOR_MULT ||
+           c == OPERATOR_DIV || c == OPERATOR_EQUAL || c == OPERATOR_NEGATION ||
+           c == OPERATOR_SUP || c == OPERATOR_INF || c == OPERATOR_AND || c == OPERATOR_OR;
 }
 
 bool is_punctuation(char c) {
-    return ispunct(c) && !is_operator(c);
+    return c == '(' || c == ')' || c == '{' || c == '}' || c == ',' ||
+           c == ';' || c == ':';
+}
+
+bool is_alpha(const char *str) {
+    for (int i = 0; i < sizeof(keywords) / sizeof(keywords[0]); ++i) {
+        if (strcmp(str, keywords[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool is_digit(char c) {
     return isdigit(c);
 }
 
-char *lexer_getalpha(buffer_t *buffer) {
+char *lexer_getalphanum(buffer_t *buffer) {
     static char ident[256];
     size_t idx = 0;
 
@@ -33,7 +38,7 @@ char *lexer_getalpha(buffer_t *buffer) {
     buf_lock(buffer);
 
     char c = buf_getchar(buffer);
-    while (is_alphanum(c)) {
+    while (isalnum(c)) {
         ident[idx++] = c;
         c = buf_getchar(buffer);
     }
@@ -45,7 +50,7 @@ char *lexer_getalpha(buffer_t *buffer) {
     return ident;
 }
 
-char *lexer_getalphanum(buffer_t *buffer) {
+char *lexer_getalpha(buffer_t *buffer) {
     static char ident[256];
     size_t idx = 0;
 
@@ -53,59 +58,36 @@ char *lexer_getalphanum(buffer_t *buffer) {
     buf_lock(buffer);
 
     char c = buf_getchar(buffer);
-    while (is_alpha(c)) {
+    while (isalpha(c)) {
         ident[idx++] = c;
         c = buf_getchar(buffer);
     }
-    buf_rollback(buffer, 1); // Rewind last non-alphabetic character
+    buf_rollback(buffer, 1);
     buf_unlock(buffer);
 
     ident[idx] = '\0';
 
-    return ident;
+    if (is_alpha(ident)) {
+        return ident;
+    } else {
+        buf_rollback(buffer, idx);
+        return "";
+    }
 }
 
-char *lexer_getop(buffer_t *buffer) {
+char lexer_getoperator(buffer_t *buffer) {
     buf_skipblank(buffer);
     buf_lock(buffer);
-    char *result = malloc(3);
-    if (!result) {
-        buf_unlock(buffer);
-        return NULL;
-    }
 
-    char character = buf_getchar(buffer);
-    int i = 0;
-    if (character == OPERATOR_PLUS || character == OPERATOR_MINUS ||
-        character == OPERATOR_MULT || character == OPERATOR_DIV ||
-        character == OPERATOR_EQUAL || character == OPERATOR_SUP ||
-            character == OPERATOR_INF || character == OPERATOR_NEGATION ||
-            character == OPERATOR_AND || character == OPERATOR_OR) {
-        result[i++] = character;
+    char c = buf_getchar(buffer);
+    if (is_operator(c)) {
+        buf_unlock(buffer);
+        return c;
     } else {
         buf_rollback(buffer, 1);
         buf_unlock(buffer);
-        free(result);
-        return NULL;
+        return '\0';
     }
-
-    character = buf_getchar(buffer);
-    if ((result[0] == OPERATOR_EQUAL && character == OPERATOR_EQUAL) ||
-        (result[0] == OPERATOR_NEGATION && character == OPERATOR_EQUAL) ||
-        (result[0] == OPERATOR_INF && character == OPERATOR_EQUAL) ||
-            (result[0] == OPERATOR_SUP && character == OPERATOR_EQUAL) ||
-            (result[0] == OPERATOR_PLUS && character == OPERATOR_PLUS) ||
-            (result[0] == OPERATOR_MINUS && character == OPERATOR_MINUS) ||
-            (result[0] == OPERATOR_AND && character == OPERATOR_AND) ||
-            (result[0] == OPERATOR_OR && character == OPERATOR_OR)) {
-        result[i++] = character;
-    } else {
-        buf_rollback(buffer, 1);
-    }
-
-    result[i] = '\0';
-    buf_unlock(buffer);
-    return result;
 }
 
 char lexer_getchar(buffer_t *buffer) {
@@ -117,7 +99,7 @@ char lexer_getchar(buffer_t *buffer) {
         buf_unlock(buffer);
         return c;
     } else {
-        buf_rollback(buffer, 1); // Rewind last non-punctuation character
+        buf_rollback(buffer, 1);
         buf_unlock(buffer);
         return '\0';
     }
@@ -135,7 +117,7 @@ char *lexer_getnumber(buffer_t *buffer) {
         number[idx++] = c;
         c = buf_getchar(buffer);
     }
-    buf_rollback(buffer, 1); // Rewind last non-digit character
+    buf_rollback(buffer, 1);
     buf_unlock(buffer);
 
     number[idx] = '\0';

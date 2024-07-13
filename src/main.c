@@ -13,36 +13,43 @@ int main() {
     buffer_t buffer;
     buf_init(&buffer, fd);
 
-    char *alpha;
-    char *alphanum;
-    char *op;
+    char *token;
+    char op;
     char punct;
     char *num;
 
     while (!buf_eof(&buffer)) {
-        alpha = lexer_getalpha(&buffer);
-        if (alpha[0] != '\0') {
-            printf("Alpha: %s\n", alpha);
+        token = lexer_getalpha(&buffer);
+        if (token[0] != '\0') {
+            printf("Alpha: %s\n", token);
+            continue;
         }
 
-        alphanum = lexer_getalphanum(&buffer);
-        if (alphanum[0] != '\0') {
-            printf("Alphanum: %s\n", alphanum);
-        }
-
-        op = lexer_getop(&buffer);
-        if (op != '\0') {
-            printf("Operator: %s\n", op);
-        }
-
-        punct = lexer_getchar(&buffer);
-        if (punct != '\0') {
-            printf("Punctuation: %c\n", punct);
-        }
-
+        // Then check for numbers
         num = lexer_getnumber(&buffer);
         if (num[0] != '\0') {
             printf("Number: %s\n", num);
+            continue;
+        }
+
+        // Then check for operators
+        op = lexer_getoperator(&buffer);
+        if (op != '\0') {
+            printf("Operator: %c\n", op);
+            continue;
+        }
+
+        // Then check for punctuation
+        punct = lexer_getchar(&buffer);
+        if (punct != '\0') {
+            printf("Punctuation: %c\n", punct);
+            continue;
+        }
+
+        // Finally check for alphanumeric tokens
+        token = lexer_getalphanum(&buffer);
+        if (token[0] != '\0') {
+            printf("AlphaNum: %s\n", token);
         }
     }
 
