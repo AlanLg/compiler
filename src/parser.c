@@ -1,5 +1,4 @@
 #include "../include/parser.h"
-#include <stdio.h>
 
 symbol_t *table;
 
@@ -87,57 +86,57 @@ ast_t *analyze_function(buffer_t *buffer) {
   Fin
 */
 symbol_t *analyze_parameters(buffer_t *buffer) {
-    printf("analyzing params");
-    if (buf_getchar(buffer) != '(') {
-        perror("missing ( for function parameters");
+    printf("analyzing params\n");
+    if (lexer_getchar(buffer) != '(') {
+        perror("missing ( for function parameters\n");
         exit(1);
     }
 
     char comma_or_parenthesis;
 
-    printf("locking buffer");
-    buf_lock(buffer);
-    comma_or_parenthesis = buf_getchar(buffer);
+    printf("locking buffer\n");
+    comma_or_parenthesis = lexer_getchar(buffer);
 
-    printf("checking if )");
+    printf("checking if )\n");
     if (comma_or_parenthesis == ')') {
         return NULL;
     }
 
-    printf("rollback");
-    buf_rollback(buffer, 1);
-
     symbol_t *parameter_symbols = NULL;
 
-    printf("starting do while");
+    printf("starting do while\n");
     do {
         char *parameter_type_name = lexer_getalphanum(buffer);
+        if (parameter_symbols != NULL) {
+            printf("printing symbols before search: %s\n", parameter_symbols->name);
+        }
 
-        printf("type: %s", parameter_type_name);
 
+        printf("type: %s\n", parameter_type_name);
         var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
+
         if (parameter_type == UNKNOWN) {
-          perror("parameter type is not valid");
+          perror("parameter type is not valid\n");
           exit(1);
         }
 
         char *parameter_name = lexer_getalphanum(buffer);
-        ast_t *ast = ast_new_variable(parameter_name, parameter_type);
-
-        printf("name: %s", parameter_type_name);
-
-        sym_add(&parameter_symbols, sym_new(parameter_name, SYM_PARAM, ast));
 
         if (sym_search(parameter_symbols, parameter_name) != NULL) {
-          perror("parameter name is already taken");
+          perror("parameter name is already taken\n");
           exit(1);
         }
 
-        comma_or_parenthesis = buf_getchar(buffer);
+        ast_t *ast = ast_new_variable(parameter_name, parameter_type);
+
+        sym_add(&parameter_symbols, sym_new(parameter_name, SYM_PARAM, ast));
+
+        comma_or_parenthesis = lexer_getchar(buffer);
+
     } while (comma_or_parenthesis == ',');
 
     if (comma_or_parenthesis != ')') {
-      perror("missing ) at end of parameters");
+      perror("missing ) at end of parameters\n");
       exit(1);
     }
 

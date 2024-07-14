@@ -1,5 +1,5 @@
 #include "../include/buffer.h"
-#include "lexer.h"
+#include "../include/lexer.h"
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>

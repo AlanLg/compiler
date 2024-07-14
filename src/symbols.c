@@ -1,4 +1,5 @@
 #include "../include/symbols.h"
+#include <stdio.h>
 
 symbol_t *sym_new(char *name, sym_type_e type, ast_t *ast_node) {
     symbol_t *symbol = (symbol_t*)malloc(sizeof(symbol_t));
@@ -73,10 +74,12 @@ void sym_remove(symbol_t **table, symbol_t *sym) {
 
 void sym_add(symbol_t **table, symbol_t *sym) {
     if (*table == NULL) {
+        printf("its null, adding %s\n", sym->name);
         *table = sym;
     } else {
         symbol_t *temp_symbol = *table;
         while (temp_symbol->next != NULL) {
+        printf("looping, found %s\n", temp_symbol->name);
           temp_symbol = temp_symbol->next;
         }
         temp_symbol->next = temp_symbol;
@@ -84,11 +87,16 @@ void sym_add(symbol_t **table, symbol_t *sym) {
 }
 
 symbol_t * sym_search(symbol_t *table, char *name) {
-  while(table != NULL) {
-    if(strcmp(table->name, name) == 0) {
-      return table;
+    printf("searching for name : %s \n", name);
+    while(table != NULL) {
+        symbol_t *temp = table;
+        printf("checking for name: %s\n", temp->name);
+        if(strcmp(temp->name, name) == 0) {
+            printf("found for name: %s\n", temp->name);
+            return temp;
+        }
+        temp = temp->next;
     }
-    table = table->next;
-  }
-  return NULL;
+    printf("returning null\n");
+    return NULL;
 }

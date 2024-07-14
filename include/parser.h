@@ -4,6 +4,8 @@
 #include "lexer.h"
 #include "ast.h"
 #include "symbols.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void parse(buffer_t *buffer);
 
