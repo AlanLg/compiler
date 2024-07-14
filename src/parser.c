@@ -95,6 +95,7 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
     char comma_or_parenthesis;
 
     printf("locking buffer\n");
+    buf_lock(buffer);
     comma_or_parenthesis = lexer_getchar(buffer);
 
     printf("checking if )\n");
@@ -102,11 +103,13 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
         return NULL;
     }
 
+    buf_rollback_and_unlock(buffer, 1);
     symbol_t *parameter_symbols = NULL;
 
     printf("starting do while\n");
     do {
-        char *parameter_type_name = lexer_getalphanum(buffer);
+        char *parameter_type_name = lexer_getalpha(buffer);
+
         if (parameter_symbols != NULL) {
             printf("printing symbols before search: %s\n", parameter_symbols->name);
         }
@@ -128,8 +131,8 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
         }
 
         ast_t *ast = ast_new_variable(parameter_name, parameter_type);
-
-        sym_add(&parameter_symbols, sym_new(parameter_name, SYM_PARAM, ast));
+        symbol_t *new_symbol = sym_new(parameter_name, SYM_PARAM, ast);
+        sym_add(&parameter_symbols, new_symbol);
 
         comma_or_parenthesis = lexer_getchar(buffer);
 
@@ -144,11 +147,11 @@ symbol_t *analyze_parameters(buffer_t *buffer) {
 }
 
 var_type_e analyze_return(buffer_t *buffer) {
-    if (buf_getchar(buffer) != ':') {
+    if (lexer_getchar(buffer) != ':') {
         perror("missing : for function return type");
         exit(1);
     }
-    var_type_e return_type = get_var_type_from_string(lexer_getalphanum(buffer));
+    var_type_e return_type = get_var_type_from_string(lexer_getalpha(buffer));
     if (return_type == UNKNOWN) {
         perror("unknown type for function return type");
         exit(1);

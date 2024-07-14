@@ -79,17 +79,17 @@ void sym_add(symbol_t **table, symbol_t *sym) {
     } else {
         symbol_t *temp_symbol = *table;
         while (temp_symbol->next != NULL) {
-        printf("looping, found %s\n", temp_symbol->name);
-          temp_symbol = temp_symbol->next;
+            printf("looping, found %s\n", temp_symbol->name);
+            temp_symbol = temp_symbol->next;
         }
-        temp_symbol->next = temp_symbol;
+        temp_symbol->next = sym;
     }
 }
 
 symbol_t * sym_search(symbol_t *table, char *name) {
     printf("searching for name : %s \n", name);
-    while(table != NULL) {
-        symbol_t *temp = table;
+    symbol_t *temp = table;
+    while (temp != NULL) {
         printf("checking for name: %s\n", temp->name);
         if(strcmp(temp->name, name) == 0) {
             printf("found for name: %s\n", temp->name);

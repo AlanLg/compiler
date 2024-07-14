@@ -24,7 +24,7 @@ char *lexer_getalphanum(buffer_t *buffer);
 
 char *lexer_getalpha(buffer_t *buffer);
 
-char lexer_getoperator(buffer_t *buffer);
+char *lexer_getoperator(buffer_t *buffer);
 
 char lexer_getchar(buffer_t *buffer);
 
