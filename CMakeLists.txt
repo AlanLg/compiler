@@ -11,6 +11,7 @@ add_executable(compiler
         include/parser.h
         include/symbols.h
         include/ast.h
+        include/errors.h
         include/utils.h
         src/buffer.c
         src/lexer.c
@@ -18,4 +19,5 @@ add_executable(compiler
         src/symbols.c
         src/ast.c
         src/utils.c
-        src/parser.c)
+        src/parser.c
+        src/errors.c)
