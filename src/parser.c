@@ -24,7 +24,6 @@ void parse(buffer_t *buffer) {
 
 }
 
-//TODO à tester
 ast_t *analyze_function(buffer_t *buffer) {
     char *name = lexer_getalphanum(buffer);
     symbol_t *params = analyze_parameters(buffer);
