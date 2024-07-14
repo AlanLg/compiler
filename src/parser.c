@@ -15,7 +15,7 @@ symbol_t *table;
   Fin
 */
 void parse(buffer_t *buffer) {
-    if (!strcmp(lexer_getalphanum(buffer), "fonction")) {
+    if (strcmp(lexer_getalpha(buffer), "fonction") != 0) {
         perror("first lexer was not \"fonction\"");
         exit(1);
     }
@@ -24,18 +24,7 @@ void parse(buffer_t *buffer) {
 
 }
 
-/*
-  Début
-   analyse du lexème qui sera le nom de la fonction
-   appel de analyse_paramètres()
-   appel de analyse_type_de_retour()
-   appel de analyse_corps_de_fonction()
-   création de l’AST pour la fonction “main” avec les paramètres, type de retour et corps de
-  fonction
-   ajout du symbole correspondant au nom de la fonction dans la table des symboles
-   retourner l’AST pour la fonction “main”
-  Fin
-*/
+//TODO à tester
 ast_t *analyze_function(buffer_t *buffer) {
     char *name = lexer_getalphanum(buffer);
     symbol_t *params = analyze_parameters(buffer);
@@ -65,26 +54,6 @@ ast_t *analyze_function(buffer_t *buffer) {
     return ast_function;
 }
 
-
-/*
-  Début
-    analyse du prochain symbole de ponctuation
-    si ce n’est pas ‘(‘,
-    produire une erreur
-    répéter indéfiniment
-    analyse du prochain lexème
-    si ce n’est pas un type valide,
-    produire une erreur
-    analyse du prochain lexème, qui sera le nom du paramètre
-    vérification de l’inexistance du lexème dans la table des symboles
-    si le symbole n’existe pas, l’ajouter dans la table des symboles
-    créer l’AST correspondant à la variable
-    ajouter l’AST à la liste des paramètres
-    si le prochain symbole de ponctuation est ‘,’, continuer
-    sinon si c’est ‘)’, arrêter
-    retourner la liste des paramètres
-  Fin
-*/
 symbol_t *analyze_parameters(buffer_t *buffer) {
     printf("analyzing params\n");
     if (lexer_getchar(buffer) != '(') {
@@ -159,5 +128,49 @@ var_type_e analyze_return(buffer_t *buffer) {
     return return_type;
 }
 
+
 symbol_t *analyze_function_body(buffer_t *buffer) {
+    if (lexer_getchar(buffer) != '{') {
+        perror("missing { for function body\n");
+        exit(1);
+    }
+
+    symbol_t *table_function_body = NULL;
+    do {
+        buf_lock(buffer);
+        char *alphanum = lexer_getalphanum(buffer);
+        symbol_t *actual_function_body_symbol = NULL;
+        if (is_alpha(alphanum)) {
+            char *alpha = alphanum;
+            if (strcmp(alpha, "si") == 0) {
+                actual_function_body_symbol = analyze_conditional_branching(buffer);
+            } else if (strcmp(alpha, "tantque") == 0) {
+                actual_function_body_symbol = analyze_loop(buffer);
+            } else {
+                actual_function_body_symbol = analyze_declaration(buffer);
+            }
+        } else {
+            actual_function_body_symbol = analyze_assignment(buffer);
+        }
+        sym_add(&table_function_body, actual_function_body_symbol);
+        buf_unlock(buffer);
+    } while (lexer_getchar(buffer) != '}');
+
+    return table_function_body;
+}
+
+symbol_t *analyze_declaration(buffer_t *buffer) {
+    return NULL;
+}
+
+symbol_t *analyze_assignment(buffer_t *buffer) {
+    return NULL;
+}
+
+symbol_t *analyze_loop(buffer_t *buffer) {
+    return NULL;
+}
+
+symbol_t *analyze_conditional_branching(buffer_t *buffer) {
+    return NULL;
 }

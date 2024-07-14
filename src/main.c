@@ -19,7 +19,7 @@ int main() {
     char punct;
     char *num;
 
-    analyze_parameters(&buffer);
+    parse(&buffer);
     fclose(fd);
     return EXIT_SUCCESS;
 }
