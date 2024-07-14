@@ -2,29 +2,20 @@
 
 symbol_t *table;
 
-/*
-  Début
-   répéter
-   analyse du lexème
-   si le premier lexème n’est pas fonction,
-   arrêter et retourner une erreur
-   sinon
-   appeler analyse_fonction()
-   ajouter l’ast_t* retourné dans la liste des fonctions
-   tant que le fichier n’est pas terminé
-  Fin
-*/
 void parse(buffer_t *buffer) {
     if (strcmp(lexer_getalpha(buffer), "fonction") != 0) {
         perror("first lexer was not \"fonction\"");
         exit(1);
     }
 
-    ast_t *result = analyze_function(buffer);
-
+    while (!buf_eof(buffer)) {
+        symbol_t *result = analyze_function(buffer);
+        sym_add(&table, result);
+    }
 }
 
-ast_t *analyze_function(buffer_t *buffer) {
+
+symbol_t *analyze_function(buffer_t *buffer) {
     char *name = lexer_getalphanum(buffer);
     symbol_t *params = analyze_parameters(buffer);
     var_type_e return_type = analyze_return(buffer);
@@ -50,7 +41,7 @@ ast_t *analyze_function(buffer_t *buffer) {
     sym_add(&function_symbol->function_table, stmts);
     sym_add(&table, function_symbol);
 
-    return ast_function;
+    return function_symbol;
 }
 
 symbol_t *analyze_parameters(buffer_t *buffer) {

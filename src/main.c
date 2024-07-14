@@ -13,12 +13,6 @@ int main() {
 
     buffer_t buffer;
     buf_init(&buffer, fd);
-
-    char *token;
-    char op;
-    char punct;
-    char *num;
-
     parse(&buffer);
     fclose(fd);
     return EXIT_SUCCESS;
