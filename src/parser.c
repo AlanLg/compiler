@@ -170,7 +170,7 @@ symbol_t *analyze_declaration(buffer_t *buffer, error_list *errors) {
     var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
 
     if (parameter_type == UNKNOWN) {
-      addError(errors, "parameter type is not valid\n");
+      add_error(errors, "parameter type is not valid\n");
     }
 
     char *parameter_name = lexer_getalphanum(buffer, errors);
@@ -195,18 +195,18 @@ symbol_t *analyze_loop(buffer_t *buffer, error_list *errors) {
 symbol_t *analyze_conditional_branching(buffer_t *buffer, error_list *errors) {
     const char *conditional_branching_start = lexer_getalpha(buffer, errors);
     if (strcmp(conditional_branching_start, "si") != 0) {
-        addError(errors, "invalid conditional branching start");
+        add_error(errors, "invalid conditional branching start");
     }
 
     const char parenthesis = lexer_getchar(buffer, errors);
 
     if (parenthesis != '(') {
-        addError(errors, "missing (");
+        add_error(errors, "missing (");
     }
 
     return NULL;
 }
 
-ast_t *analyse_expression(buffer_t *buffer, ErrorList *errors) {
+ast_t *analyse_expression(buffer_t *buffer, error_list *errors) {
 
 }
