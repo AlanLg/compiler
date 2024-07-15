@@ -3,9 +3,8 @@
 #include <string.h>
 #include "errors.h"
 
-// Fonction pour initialiser la liste des erreurs
-ErrorList* initErrorList() {
-    ErrorList *list = (ErrorList *)malloc(sizeof(ErrorList));
+error_list* init_errorList() {
+    error_list *list = (error_list *)malloc(sizeof(error_list));
     if (list == NULL) {
         fprintf(stderr, "Erreur d'allocation de mémoire.\n");
         exit(1);
@@ -15,22 +14,20 @@ ErrorList* initErrorList() {
     return list;
 }
 
-// Fonction pour ajouter une erreur à la liste
-void addError(ErrorList *list, const char *message) {
-    ErrorNode *newNode = (ErrorNode *)malloc(sizeof(ErrorNode));
+void add_error(error_list *list, const char *message) {
+    error_node *newNode = (error_node *)malloc(sizeof(error_node));
     if (newNode == NULL) {
         fprintf(stderr, "Erreur d'allocation de mémoire.\n");
         exit(1);
     }
-    newNode->message = strdup(message); // Copie du message
-    newNode->next = list->head; // Insertion en tête de liste
+    newNode->message = strdup(message);
+    newNode->next = list->head;
     list->head = newNode;
     list->count++;
 }
 
-// Fonction pour afficher toutes les erreurs
-void printErrors(const ErrorList *list) {
-    ErrorNode *current = list->head;
+void print_errors(const error_list *list) {
+    error_node *current = list->head;
     if (current == NULL) {
         printf("Aucune erreur trouvée.\n");
         return;
@@ -42,14 +39,13 @@ void printErrors(const ErrorList *list) {
     }
 }
 
-// Fonction pour libérer la mémoire allouée à la liste des erreurs
-void freeErrorList(ErrorList *list) {
-    ErrorNode *current = list->head;
+void free_errorList(error_list *list) {
+    error_node *current = list->head;
     while (current != NULL) {
-        ErrorNode *temp = current;
+        error_node *temp = current;
         current = current->next;
-        free(temp->message); // Libération du message
-        free(temp); // Libération du nœud
+        free(temp->message);
+        free(temp);
     }
-    free(list); // Libération de la structure de la liste
+    free(list);
 }

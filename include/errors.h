@@ -1,26 +1,23 @@
 #ifndef ERRORS_H
 #define ERRORS_H
 
-typedef struct ErrorNode {
+typedef struct error_node {
     char *message;
-    struct ErrorNode *next;
-} ErrorNode;
+    struct error_node *next;
+} error_node;
 
-typedef struct ErrorList {
-    ErrorNode *head;
+typedef struct error_list {
+    error_node *head;
     int count;
-} ErrorList;
+} error_list;
 
-// Fonction pour initialiser la liste des erreurs
-ErrorList* initErrorList();
+error_list* init_errorList();
 
-// Fonction pour ajouter une erreur à la liste
-void addError(ErrorList *list, const char *message);
+void add_error(error_list *list, const char *message);
 
-// Fonction pour afficher toutes les erreurs
-void printErrors(const ErrorList *list);
+void print_errors(const error_list *list);
 
 // Fonction pour libérer la mémoire allouée à la liste des erreurs
-void freeErrorList(ErrorList *list);
+void free_errorList(error_list *list);
 
 #endif // ERRORS_H

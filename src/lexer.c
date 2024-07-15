@@ -32,7 +32,7 @@ bool is_digit(char c) {
     return isdigit(c);
 }
 
-char *lexer_getalphanum(buffer_t *buffer, ErrorList *errors) {
+char *lexer_getalphanum(buffer_t *buffer, error_list *errors) {
     char ident[256];
     size_t idx = 0;
 
@@ -51,13 +51,13 @@ char *lexer_getalphanum(buffer_t *buffer, ErrorList *errors) {
     if (result != NULL) {
         strcpy(result, ident);
     } else {
-        addError(errors, "Erreur : Allocation de mémoire échouée dans lexer_getalphanum.");
+        add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getalphanum.");
     }
 
     return result;
 }
 
-char *lexer_getalpha(buffer_t *buffer, ErrorList *errors) {
+char *lexer_getalpha(buffer_t *buffer, error_list *errors) {
     char ident[256];
     size_t idx = 0;
 
@@ -76,22 +76,22 @@ char *lexer_getalpha(buffer_t *buffer, ErrorList *errors) {
         if (result != NULL) {
             strcpy(result, ident);
         } else {
-            addError(errors, "Erreur : Allocation de mémoire échouée dans lexer_getalpha.");
+            add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getalpha.");
         }
         return result;
     } else {
-        addError(errors, "Erreur : Identifiant non reconnu dans lexer_getalpha.");
+        add_error(errors, "Erreur : Identifiant non reconnu dans lexer_getalpha.");
         return "";
     }
 }
 
-char *lexer_getoperator(buffer_t *buffer, ErrorList *errors) {
+char *lexer_getoperator(buffer_t *buffer, error_list *errors) {
     buf_skipblank(buffer);
     buf_lock(buffer);
     char *result = malloc(3);
     if (!result) {
         buf_unlock(buffer);
-        addError(errors, "Erreur : Allocation de mémoire échouée dans lexer_getoperator.");
+        add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getoperator.");
         return NULL;
     }
 
@@ -107,7 +107,7 @@ char *lexer_getoperator(buffer_t *buffer, ErrorList *errors) {
         buf_rollback(buffer, 1);
         buf_unlock(buffer);
         free(result);
-        addError(errors, "Erreur : Opérateur non reconnu dans lexer_getoperator.");
+        add_error(errors, "Erreur : Opérateur non reconnu dans lexer_getoperator.");
         return NULL;
     }
 
@@ -130,19 +130,19 @@ char *lexer_getoperator(buffer_t *buffer, ErrorList *errors) {
     return result;
 }
 
-char lexer_getchar(buffer_t *buffer, ErrorList *errors) {
+char lexer_getchar(buffer_t *buffer, error_list *errors) {
     buf_skipblank(buffer);
 
     char c = buf_getchar(buffer);
     if (is_punctuation(c)) {
         return c;
     } else {
-        addError(errors, "Erreur : Caractère de ponctuation non reconnu dans lexer_getchar.");
+        add_error(errors, "Erreur : Caractère de ponctuation non reconnu dans lexer_getchar.");
         return '\0';
     }
 }
 
-char *lexer_getnumber(buffer_t *buffer, ErrorList *errors) {
+char *lexer_getnumber(buffer_t *buffer, error_list *errors) {
     static char number[256];
     size_t idx = 0;
 
@@ -161,7 +161,7 @@ char *lexer_getnumber(buffer_t *buffer, ErrorList *errors) {
     if (result != NULL) {
         strcpy(result, number);
     } else {
-        addError(errors, "Erreur : Allocation de mémoire échouée dans lexer_getnumber.");
+        add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getnumber.");
     }
 
     return result;

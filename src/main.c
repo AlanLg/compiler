@@ -15,10 +15,10 @@ int main() {
     buffer_t buffer;
     buf_init(&buffer, fd);
 
-    ErrorList *errors = initErrorList();
+    error_list *errors = init_errorList();
     parse(&buffer, errors);
-    printErrors(errors);
-    freeErrorList(errors);
+    print_errors(errors);
+    free_errorList(errors);
 
     fclose(fd);
     return EXIT_SUCCESS;

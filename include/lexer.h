@@ -21,14 +21,14 @@ bool is_punctuation(char c);
 bool is_alpha(const char *str);
 bool is_digit(char c);
 
-char *lexer_getalphanum(buffer_t *buffer, ErrorList *errors);
+char *lexer_getalphanum(buffer_t *buffer, error_list *errors);
 
-char *lexer_getalpha(buffer_t *buffer, ErrorList *errors);
+char *lexer_getalpha(buffer_t *buffer, error_list *errors);
 
-char *lexer_getoperator(buffer_t *buffer, ErrorList *errors);
+char *lexer_getoperator(buffer_t *buffer, error_list *errors);
 
-char lexer_getchar(buffer_t *buffer, ErrorList *errors);
+char lexer_getchar(buffer_t *buffer, error_list *errors);
 
-char *lexer_getnumber(buffer_t *buffer, ErrorList *errors);
+char *lexer_getnumber(buffer_t *buffer, error_list *errors);
 
 #endif
