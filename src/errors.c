@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "errors.h"
+#include "../include/errors.h"
 
 // Fonction pour initialiser la liste des erreurs
 ErrorList* initErrorList() {
     ErrorList *list = (ErrorList *)malloc(sizeof(ErrorList));
     if (list == NULL) {
         fprintf(stderr, "Erreur d'allocation de mémoire.\n");
-        exit(1);
     }
     list->head = NULL;
     list->count = 0;
@@ -20,7 +19,6 @@ void addError(ErrorList *list, const char *message) {
     ErrorNode *newNode = (ErrorNode *)malloc(sizeof(ErrorNode));
     if (newNode == NULL) {
         fprintf(stderr, "Erreur d'allocation de mémoire.\n");
-        exit(1);
     }
     newNode->message = strdup(message); // Copie du message
     newNode->next = list->head; // Insertion en tête de liste

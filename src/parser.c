@@ -6,7 +6,6 @@ symbol_t *table;
 void parse(buffer_t *buffer, ErrorList *errors) {
     if (strcmp(lexer_getalpha(buffer, errors), "fonction") != 0) {
         addError(errors,"first lexer was not \"fonction\"");
-        exit(1);
     }
 
     while (!buf_eof(buffer)) {
@@ -59,7 +58,6 @@ symbol_t *analyze_parameters(buffer_t *buffer, ErrorList *errors) {
     printf("analyzing params\n");
     if (lexer_getchar(buffer, errors) != '(') {
         addError(errors,"missing ( for function parameters\n");
-        exit(1);
     }
 
     char comma_or_parenthesis;
@@ -92,7 +90,6 @@ symbol_t *analyze_parameters(buffer_t *buffer, ErrorList *errors) {
 
         if (parameter_type == UNKNOWN) {
           addError(errors, "parameter type is not valid\n");
-          exit(1);
         }
 
         char *parameter_name = lexer_getalphanum(buffer, errors);
@@ -100,7 +97,6 @@ symbol_t *analyze_parameters(buffer_t *buffer, ErrorList *errors) {
 
         if (sym_search(parameter_symbols, parameter_name) != NULL) {
           addError(errors,"parameter name is already taken\n");
-          exit(1);
         }
 
         ast_t *ast = ast_new_variable(parameter_name, parameter_type);
@@ -113,7 +109,6 @@ symbol_t *analyze_parameters(buffer_t *buffer, ErrorList *errors) {
 
     if (comma_or_parenthesis != ')') {
       addError(errors,"missing ) at end of parameters\n");
-      exit(1);
     }
 
     return parameter_symbols;
@@ -122,12 +117,10 @@ symbol_t *analyze_parameters(buffer_t *buffer, ErrorList *errors) {
 var_type_e analyze_return(buffer_t *buffer, ErrorList *errors) {
     if (lexer_getchar(buffer, errors) != ':') {
         addError(errors,"missing : for function return type");
-        exit(1);
     }
     var_type_e return_type = get_var_type_from_string(lexer_getalpha(buffer, errors));
     if (return_type == UNKNOWN) {
         addError(errors,"unknown type for function return type");
-        exit(1);
     }
     return return_type;
 }
@@ -135,7 +128,6 @@ var_type_e analyze_return(buffer_t *buffer, ErrorList *errors) {
 symbol_t *analyze_function_body(buffer_t *buffer, ErrorList *errors) {
     if (lexer_getchar(buffer, errors) != '{') {
         addError(errors,"missing { for function body\n");
-        exit(1);
     }
 
     symbol_t *table_function_body = NULL;
