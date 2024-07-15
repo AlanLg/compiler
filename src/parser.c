@@ -6,7 +6,6 @@ symbol_t *table;
 void parse(buffer_t *buffer, error_list *errors) {
     if (strcmp(lexer_getalpha(buffer, errors), "fonction") != 0) {
         add_error(errors,"first lexer was not \"fonction\"");
-        exit(1);
     }
 
     while (!buf_eof(buffer)) {
@@ -59,7 +58,6 @@ symbol_t *analyze_parameters(buffer_t *buffer, error_list *errors) {
     printf("analyzing params\n");
     if (lexer_getchar(buffer, errors) != '(') {
         add_error(errors,"missing ( for function parameters\n");
-        exit(1);
     }
 
     char comma_or_parenthesis;
@@ -92,7 +90,6 @@ symbol_t *analyze_parameters(buffer_t *buffer, error_list *errors) {
 
         if (parameter_type == UNKNOWN) {
           add_error(errors, "parameter type is not valid\n");
-          exit(1);
         }
 
         char *parameter_name = lexer_getalphanum(buffer, errors);
@@ -100,7 +97,6 @@ symbol_t *analyze_parameters(buffer_t *buffer, error_list *errors) {
 
         if (sym_search(parameter_symbols, parameter_name) != NULL) {
           add_error(errors,"parameter name is already taken\n");
-          exit(1);
         }
 
         ast_t *ast = ast_new_variable(parameter_name, parameter_type);
@@ -113,21 +109,23 @@ symbol_t *analyze_parameters(buffer_t *buffer, error_list *errors) {
 
     if (comma_or_parenthesis != ')') {
       add_error(errors,"missing ) at end of parameters\n");
-      exit(1);
     }
 
+    if (buffer->lock == true) {
+        buf_unlock(buffer);
+    }
+
+    printf("finished param symbol analysis\n");
     return parameter_symbols;
 }
 
 var_type_e analyze_return(buffer_t *buffer, error_list *errors) {
     if (lexer_getchar(buffer, errors) != ':') {
         add_error(errors,"missing : for function return type");
-        exit(1);
     }
     var_type_e return_type = get_var_type_from_string(lexer_getalpha(buffer, errors));
     if (return_type == UNKNOWN) {
         add_error(errors,"unknown type for function return type");
-        exit(1);
     }
     return return_type;
 }
@@ -135,7 +133,6 @@ var_type_e analyze_return(buffer_t *buffer, error_list *errors) {
 symbol_t *analyze_function_body(buffer_t *buffer, error_list *errors) {
     if (lexer_getchar(buffer, errors) != '{') {
         add_error(errors,"missing { for function body\n");
-        exit(1);
     }
 
     symbol_t *table_function_body = NULL;
@@ -168,7 +165,23 @@ symbol_t *analyze_function_body(buffer_t *buffer, error_list *errors) {
 }
 
 symbol_t *analyze_declaration(buffer_t *buffer, error_list *errors) {
-    return NULL;
+    char *parameter_type_name = lexer_getalpha(buffer, errors);
+
+    var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
+
+    if (parameter_type == UNKNOWN) {
+      addError(errors, "parameter type is not valid\n");
+    }
+
+    char *parameter_name = lexer_getalphanum(buffer, errors);
+    ast_t *ast = ast_new_variable(parameter_name, parameter_type);
+    symbol_t *new_symbol = sym_new(parameter_name, SYM_PARAM, ast);
+
+    if (lexer_getchar(buffer, errors) != ';') {
+        analyze_assignment(buffer, errors);
+    }
+
+    return new_symbol;
 }
 
 symbol_t *analyze_assignment(buffer_t *buffer, error_list *errors) {
@@ -180,5 +193,20 @@ symbol_t *analyze_loop(buffer_t *buffer, error_list *errors) {
 }
 
 symbol_t *analyze_conditional_branching(buffer_t *buffer, error_list *errors) {
+    const char *conditional_branching_start = lexer_getalpha(buffer, errors);
+    if (strcmp(conditional_branching_start, "si") != 0) {
+        addError(errors, "invalid conditional branching start");
+    }
+
+    const char parenthesis = lexer_getchar(buffer, errors);
+
+    if (parenthesis != '(') {
+        addError(errors, "missing (");
+    }
+
     return NULL;
+}
+
+ast_t *analyse_expression(buffer_t *buffer, ErrorList *errors) {
+
 }
