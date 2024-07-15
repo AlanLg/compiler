@@ -111,6 +111,11 @@ symbol_t *analyze_parameters(buffer_t *buffer, ErrorList *errors) {
       addError(errors,"missing ) at end of parameters\n");
     }
 
+    if (buffer->lock == true) {
+        buf_unlock(buffer);
+    }
+
+    printf("finished param symbol analysis\n");
     return parameter_symbols;
 }
 
@@ -160,7 +165,23 @@ symbol_t *analyze_function_body(buffer_t *buffer, ErrorList *errors) {
 }
 
 symbol_t *analyze_declaration(buffer_t *buffer, ErrorList *errors) {
-    return NULL;
+    char *parameter_type_name = lexer_getalpha(buffer, errors);
+
+    var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
+
+    if (parameter_type == UNKNOWN) {
+      addError(errors, "parameter type is not valid\n");
+    }
+
+    char *parameter_name = lexer_getalphanum(buffer, errors);
+    ast_t *ast = ast_new_variable(parameter_name, parameter_type);
+    symbol_t *new_symbol = sym_new(parameter_name, SYM_PARAM, ast);
+
+    if (lexer_getchar(buffer, errors) != ';') {
+        analyze_assignment(buffer, errors);
+    }
+
+    return new_symbol;
 }
 
 symbol_t *analyze_assignment(buffer_t *buffer, ErrorList *errors) {
