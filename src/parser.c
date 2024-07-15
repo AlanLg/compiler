@@ -193,5 +193,20 @@ symbol_t *analyze_loop(buffer_t *buffer, ErrorList *errors) {
 }
 
 symbol_t *analyze_conditional_branching(buffer_t *buffer, ErrorList *errors) {
+    const char *conditional_branching_start = lexer_getalpha(buffer, errors);
+    if (strcmp(conditional_branching_start, "si") != 0) {
+        addError(errors, "invalid conditional branching start");
+    }
+
+    const char parenthesis = lexer_getchar(buffer, errors);
+
+    if (parenthesis != '(') {
+        addError(errors, "missing (");
+    }
+
     return NULL;
+}
+
+ast_t *analyse_expression(buffer_t *buffer, ErrorList *errors) {
+
 }
