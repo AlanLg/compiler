@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "errors.h"
+#include "../include/errors.h"
 
 error_list* init_errorList() {
     error_list *list = (error_list *)malloc(sizeof(error_list));
     if (list == NULL) {
         fprintf(stderr, "Erreur d'allocation de mémoire.\n");
-        exit(1);
     }
     list->head = NULL;
     list->count = 0;
@@ -18,7 +17,6 @@ void add_error(error_list *list, const char *message) {
     error_node *newNode = (error_node *)malloc(sizeof(error_node));
     if (newNode == NULL) {
         fprintf(stderr, "Erreur d'allocation de mémoire.\n");
-        exit(1);
     }
     newNode->message = strdup(message);
     newNode->next = list->head;
