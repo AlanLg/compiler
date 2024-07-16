@@ -1,22 +1,38 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "lexer.h"
-#include "errors.h"
+#include "buffer.h"
 #include "ast.h"
 #include "symbols.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "errors.h"
 
-void parse(buffer_t *buffer, error_list *errors);
+// Fonction principale de l'analyse syntaxique
+symbol_t *parse(buffer_t *buffer, error_list *errors);
+
+// Fonction d'analyse de fonction
 symbol_t *analyze_function(buffer_t *buffer, error_list *errors);
-symbol_t *analyze_parameters(buffer_t *buffer, error_list *errors);
-symbol_t *analyze_function_body(buffer_t *buffer, error_list *errors);
-symbol_t *analyze_conditional_branching(buffer_t *buffer, error_list *errors);
-symbol_t *analyze_loop(buffer_t *buffer, error_list *errors);
-symbol_t *analyze_assignment(buffer_t *buffer, error_list *errors);
-symbol_t *analyze_declaration(buffer_t *buffer, error_list *errors);
 
+// Fonction d'analyse des paramètres de la fonction
+ast_list_t *analyze_parameters(buffer_t *buffer, error_list *errors);
+
+// Fonction d'analyse du type de retour de la fonction
 var_type_e analyze_return(buffer_t *buffer, error_list *errors);
 
-#endif
+// Fonction d'analyse du corps de la fonction
+ast_t *analyze_function_body(buffer_t *buffer, error_list *errors);
+
+// Fonction d'analyse d'une déclaration de variable
+ast_t *analyze_declaration(buffer_t *buffer, error_list *errors, char *string);
+
+// Fonction d'analyse d'une instruction conditionnelle (si ... sinon si ... sinon ...)
+ast_t *analyze_conditional(buffer_t *buffer, error_list *errors);
+
+// Fonction d'analyse d'une boucle (tantque)
+ast_t *analyze_loop(buffer_t *buffer, error_list *errors);
+
+// Fonction d'analyse d'une expression
+ast_t *analyze_expression(buffer_t *buffer, error_list *errors);
+
+ast_list_t *analyze_statements(buffer_t *buffer, error_list *errors);
+
+#endif // PARSER_H

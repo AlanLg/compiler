@@ -12,7 +12,7 @@ typedef enum {
   VAR_INTEGER,
   VAR_BOOL,
   VAR_VOID,
-  UNKNOWN,
+    VAR_UNKNOWN,
 } var_type_e;
 
 typedef enum {

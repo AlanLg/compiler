@@ -20,4 +20,6 @@ add_executable(compiler
         src/ast.c
         src/utils.c
         src/parser.c
-        src/errors.c)
+        src/errors.c
+        src/java_generator.c
+        include/java_generator.h)
