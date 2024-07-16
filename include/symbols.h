@@ -11,11 +11,11 @@ typedef enum {
 } sym_type_e;
 
 typedef struct symbol_t {
-  char *name;
-  sym_type_e type;
+    char *name;
+    sym_type_e type;
     ast_t *ast_node;
-  struct symbol_t *function_table;
-  struct symbol_t *next;
+    struct symbol_t *function_table;
+    struct symbol_t *next;
 } symbol_t;
 
 symbol_t * sym_new (char *name, sym_type_e type, ast_t *attributes);

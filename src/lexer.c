@@ -104,10 +104,8 @@ char *lexer_getoperator(buffer_t *buffer, error_list *errors) {
         character == OPERATOR_AND || character == OPERATOR_OR) {
         result[i++] = character;
     } else {
-        buf_rollback(buffer, 1);
         buf_unlock(buffer);
         free(result);
-        add_error(errors, "Erreur : Operateur non reconnu dans lexer_getoperator.");
         return NULL;
     }
 

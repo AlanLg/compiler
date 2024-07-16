@@ -12,7 +12,7 @@ var_type_e get_var_type_from_string(const char* var_type_string) {
             return i;
         }
     }
-    return UNKNOWN;
+    return VAR_UNKNOWN;
 }
 
 
@@ -26,14 +26,15 @@ ast_t *ast_new_integer(long val) {
 }
 
 ast_t *ast_new_variable(char *name, var_type_e type) {
-  ast_t *variable = (ast_t*)malloc(sizeof(ast_t));
-  if (variable) {
-    variable->type = AST_VARIABLE;
-    variable->var.name = name;
-    variable->var.type = type;
-  }
-  return variable;
+    ast_t *variable = (ast_t*)malloc(sizeof(ast_t));
+    if (variable) {
+        variable->type = AST_VARIABLE;
+        variable->var.name = strdup(name); // Dupliquer le nom de la variable
+        variable->var.type = type;
+    }
+    return variable;
 }
+
 
 ast_t *ast_new_binary(ast_binary_e op, ast_t *left, ast_t *right) {
     ast_t *node = (ast_t*)malloc(sizeof(ast_t));
@@ -128,7 +129,7 @@ ast_t *ast_new_return(ast_t *expr) {
 }
 
 ast_list_t *ast_list_new_node(ast_t *elem) {
-    ast_list_t *node = (ast_list_t *)malloc(sizeof(ast_t));
+    ast_list_t *node = (ast_list_t *)malloc(sizeof(ast_list_t));
     if (node) {
         node->current = elem;
         node->next = NULL;
