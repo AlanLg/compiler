@@ -151,6 +151,7 @@ symbol_t *analyze_function_body(buffer_t *buffer, error_list *errors) {
             } else if (strcmp(alpha, "tantque") == 0) {
                 actual_function_body_symbol = analyze_loop(buffer, errors);
             } else {
+                buf_rollback_and_unlock(buffer, sizeof(alpha)/sizeof(alpha[0]));
                 actual_function_body_symbol = analyze_declaration(buffer, errors);
             }
         } else {
@@ -177,6 +178,12 @@ symbol_t *analyze_declaration(buffer_t *buffer, error_list *errors) {
     char *parameter_name = lexer_getalphanum(buffer, errors);
     ast_t *ast = ast_new_variable(parameter_name, parameter_type);
     symbol_t *new_symbol = sym_new(parameter_name, SYM_PARAM, ast);
+
+    buf_lock(buffer);
+
+    if (lexer_getchar(buffer, errors) != ';') {
+        analyze_assignment(buffer, errors);
+    }
 
     return new_symbol;
 }
