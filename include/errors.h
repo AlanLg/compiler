@@ -17,7 +17,7 @@ void add_error(error_list *list, const char *message);
 
 void print_errors(const error_list *list);
 
-// Fonction pour libérer la mémoire allouée à la liste des erreurs
+// Fonction pour liberer la memoire allouee à la liste des erreurs
 void free_errorList(error_list *list);
 
 #endif // ERRORS_H

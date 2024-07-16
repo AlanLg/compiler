@@ -51,7 +51,7 @@ char *lexer_getalphanum(buffer_t *buffer, error_list *errors) {
     if (result != NULL) {
         strcpy(result, ident);
     } else {
-        add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getalphanum.");
+        add_error(errors, "Erreur : Allocation de memoire echouee dans lexer_getalphanum.");
     }
 
     return result;
@@ -76,7 +76,7 @@ char *lexer_getalpha(buffer_t *buffer, error_list *errors) {
         if (result != NULL) {
             strcpy(result, ident);
         } else {
-            add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getalpha.");
+            add_error(errors, "Erreur : Allocation de memoire echouee dans lexer_getalpha.");
         }
         return result;
     } else {
@@ -91,7 +91,7 @@ char *lexer_getoperator(buffer_t *buffer, error_list *errors) {
     char *result = malloc(3);
     if (!result) {
         buf_unlock(buffer);
-        add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getoperator.");
+        add_error(errors, "Erreur : Allocation de memoire echouee dans lexer_getoperator.");
         return NULL;
     }
 
@@ -107,7 +107,7 @@ char *lexer_getoperator(buffer_t *buffer, error_list *errors) {
         buf_rollback(buffer, 1);
         buf_unlock(buffer);
         free(result);
-        add_error(errors, "Erreur : Opérateur non reconnu dans lexer_getoperator.");
+        add_error(errors, "Erreur : Operateur non reconnu dans lexer_getoperator.");
         return NULL;
     }
 
@@ -138,7 +138,6 @@ char lexer_getchar(buffer_t *buffer, error_list *errors) {
     if (is_punctuation(c)) {
         return c;
     } else {
-        add_error(errors, "Erreur : Caractère de ponctuation non reconnu dans lexer_getchar.");
         return '\0';
     }
 }
@@ -162,7 +161,7 @@ char *lexer_getnumber(buffer_t *buffer, error_list *errors) {
     if (result != NULL) {
         strcpy(result, number);
     } else {
-        add_error(errors, "Erreur : Allocation de mémoire échouée dans lexer_getnumber.");
+        add_error(errors, "Erreur : Allocation de memoire echouee dans lexer_getnumber.");
     }
 
     return result;
