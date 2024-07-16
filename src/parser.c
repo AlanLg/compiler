@@ -10,7 +10,6 @@ void parse(buffer_t *buffer, error_list *errors) {
 
     while (!buf_eof(buffer)) {
         symbol_t *result = analyze_function(buffer, errors);
-        sym_add(&table, result);
         if (result) {
             sym_add(&table, result);
         } else {
@@ -161,27 +160,25 @@ symbol_t *analyze_function_body(buffer_t *buffer, error_list *errors) {
         buf_unlock(buffer);
     } while (lexer_getchar(buffer, errors) != '}');
 
+    printf("finished analaysing function body");
+
     return table_function_body;
 }
 
 symbol_t *analyze_declaration(buffer_t *buffer, error_list *errors) {
-    // char *parameter_type_name = lexer_getalpha(buffer, errors);
-    //
-    // var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
-    //
-    // if (parameter_type == UNKNOWN) {
-    //   add_error(errors, "parameter type is not valid\n");
-    // }
-    //
-    // char *parameter_name = lexer_getalphanum(buffer, errors);
-    // ast_t *ast = ast_new_variable(parameter_name, parameter_type);
-    // symbol_t *new_symbol = sym_new(parameter_name, SYM_PARAM, ast);
-    //
-    // if (lexer_getchar(buffer, errors) != ';') {
-    //     analyze_assignment(buffer, errors);
-    // }
-    //
-    // return new_symbol;
+    char *parameter_type_name = lexer_getalpha(buffer, errors);
+
+    var_type_e parameter_type = get_var_type_from_string(parameter_type_name);
+
+    if (parameter_type == UNKNOWN) {
+      add_error(errors, "parameter type is not valid\n");
+    }
+
+    char *parameter_name = lexer_getalphanum(buffer, errors);
+    ast_t *ast = ast_new_variable(parameter_name, parameter_type);
+    symbol_t *new_symbol = sym_new(parameter_name, SYM_PARAM, ast);
+
+    return new_symbol;
 }
 
 symbol_t *analyze_assignment(buffer_t *buffer, error_list *errors) {

@@ -133,7 +133,8 @@ char *lexer_getoperator(buffer_t *buffer, error_list *errors) {
 char lexer_getchar(buffer_t *buffer, error_list *errors) {
     buf_skipblank(buffer);
 
-    char c = buf_getchar(buffer);
+    const char c = buf_getchar(buffer);
+    printf("found char %c\n", c);
     if (is_punctuation(c)) {
         return c;
     } else {
