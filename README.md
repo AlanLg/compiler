@@ -77,21 +77,19 @@ project_root/
    ```sh
    ./compiler tests/test.intech
 
-
 ## Exemple de Fichier Source
 
 Voici un exemple de fichier source (test.intech) que vous pouvez utiliser pour tester le compilateur :
-   ```plaintext
-   fonction main {
-       int x = 10;
-       si (x > 5) {
-           x = x + 1;
-       }
-       tantque (x < 15) {
-           x = x - 1;
-       }
-   }
-
+      ```plaintext
+      fonction main {
+          int x = 10;
+          si (x > 5) {
+              x = x + 1;
+          }
+          tantque (x < 15) {
+              x = x - 1;
+          }
+      }
 ## Exemple de Fichier Source
 
 
