@@ -22,7 +22,7 @@ Ce projet est un compilateur simple conçu pour analyser et exécuter un langage
 
 ## Structure du Projet
 
-Le projet est organisé comme suit :
+Le projet est organisé de la manière suivante :
 
 ```
 project_root/
