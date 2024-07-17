@@ -11,6 +11,13 @@ Ce projet est un compilateur simple conçu pour analyser et exécuter un langage
 - **Buffer** : Gestion du tampon pour la lecture efficace des fichiers.
 
 
+## Langages Utilisés
+
+- **Langage Source** : Langage de programmation spécifique utilisé pour écrire les fichiers source du programme (par exemple, un pseudo-langage avec des mots-clés comme `fonction`, `si`, `tantque`).
+- **Langage Cible** : Le compilateur ne génère pas de code machine ou de bytecode pour une machine cible spécifique, mais il génère un AST pour représenter la structure du programme.
+- **Langage d'Implémentation** : Le compilateur est entièrement implémenté en **C**.
+  
+
 ## Fonctionnalités
 
 - **Analyse lexicale** : Transformation du texte source en tokens.
@@ -19,6 +26,13 @@ Ce projet est un compilateur simple conçu pour analyser et exécuter un langage
 - **Support des fonctions** : Analyse des déclarations et des corps de fonctions.
 - **Support des structures de contrôle** : Analyse des branches conditionnelles et des boucles.
 
+### Fonctionnalités Implémentées
+
+- **Lexer** : Analyse lexicale complète pour identifier les mots-clés, les identificateurs, les nombres, et les symboles.
+- **Parser** : Analyse syntaxique pour vérifier la structure des programmes, y compris les déclarations de fonctions, les paramètres, les types de retour, les corps de fonctions, les déclarations et les affectations de variables, les branches conditionnelles (`si`) et les boucles (`tantque`).
+- **AST** : Génération de l'arbre de syntaxe abstraite pour représenter la structure du programme de manière arborescente.
+- **Gestion des Erreurs** : Système complet de gestion des erreurs qui détecte et rapporte les erreurs de syntaxe et de structure, avec des messages d'erreur clairs et précis.
+  
 
 ## Structure du Projet
 
@@ -102,10 +116,10 @@ Le compilateur inclut un système de gestion des erreurs qui détecte et rapport
 
 ## Auteurs
 
-- **Alan**
-- **Gregory**
-- **Jeremie**
-- **Steven**
+- **Alan LE GALL**
+- **Gregory POTES GONZALEZ**
+- **Jeremie KUNKELA**
+- **Steven TERNEUS**
 
 
 
