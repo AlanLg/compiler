@@ -24,6 +24,7 @@ Ce projet est un compilateur simple conçu pour analyser et exécuter un langage
 
 Le projet est organisé comme suit :
 
+```
 project_root/
 │
 ├── include/ # Contient les fichiers d'en-tête
@@ -47,7 +48,7 @@ project_root/
 │ └── test.intech
 │
 └── Makefile # Script de compilation Makefile
-
+```
 
 ## Prérequis
 
@@ -76,23 +77,6 @@ project_root/
 2. **Exécution** :
    ```sh
    ./compiler tests/test.intech
-
-## Exemple de Fichier Source
-
-Voici un exemple de fichier source (test.intech) que vous pouvez utiliser pour tester le compilateur :
-
-   ```plaintext
-   fonction main {
-       int x = 10;
-       si (x > 5) {
-           x = x + 1;
-       }
-       tantque (x < 15) {
-           x = x - 1;
-       }
-   }
-   ```
-
 
 ## Exemple de Fichier Source
 
