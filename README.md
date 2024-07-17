@@ -116,11 +116,6 @@ Voici un exemple de fichier source (test.intech) que vous pouvez utiliser pour t
 Le compilateur inclut un système de gestion des erreurs qui détecte et rapporte les erreurs de syntaxe et de structure. Les erreurs sont ajoutées à une liste et affichées à la fin de l'analyse.
 
 
-## Contribution
-
-Les contributions sont les bienvenues ! Si vous avez des suggestions, des corrections de bugs ou des améliorations, n'hésitez pas à ouvrir une issue ou à soumettre une pull request.
-
-
 ## Auteurs
 
 - **Alan**
