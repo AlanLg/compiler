@@ -1,4 +1,4 @@
-# Equipe
+## Equipe
 
 - **Alan LE GALL**
 - **Gregory POTES GONZALEZ**
