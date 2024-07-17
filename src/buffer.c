@@ -51,7 +51,6 @@ void buf_unlock (buffer_t *buffer) {
 static
 size_t buf_fread (buffer_t *buffer, size_t offset, size_t n)
 {
-  // printf("read %lu bytes\n", n);
   size_t cnt = fread(&(buffer->content[offset]), 1, n, buffer->fd);
   if (cnt < n) {
     buffer->eof = true;
@@ -92,8 +91,6 @@ char buf_getchar (buffer_t *buffer)
   size_t end;
   if (buffer->avail == 0) {
     if (buffer->islocked) {
-      // on doit charger le max de caractères
-      // on commence par la fin de la chaîne entre end et lock
       if (buffer->end >= buffer->lock) {
         if (buffer->end < BUF_SIZE - 1) {
           end = buf_fread(buffer, buffer->end, BUF_SIZE - buffer->end);
@@ -143,18 +140,14 @@ void buf_getnchar (buffer_t *buffer, char *out, size_t n)
   char *content = buffer->content;
  
   while (n) {
-    // number of chars that can be read w/o going back to 0
     size_t currpos = !buffer->islocked ? buffer->it : buffer->lock;
 
     size_t nmax = BUF_SIZE - currpos < n
       ? BUF_SIZE - currpos
       : n;
-    // if the current number of buffered items is not enough
     if (buffer->avail < nmax) {
-      // if |xxxxx]------[xxxxx| then |xxxxxxxxxxx][xxxxx|
       if (buffer->end < currpos)
         max = currpos - buffer->end;
-      // if |-----[xxxxxx]-----| then |-----[xxxxxxxxxxx]|
       else
         max = BUF_SIZE - buffer->end;
 

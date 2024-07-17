@@ -29,7 +29,7 @@ ast_t *ast_new_variable(char *name, var_type_e type) {
     ast_t *variable = (ast_t*)malloc(sizeof(ast_t));
     if (variable) {
         variable->type = AST_VARIABLE;
-        variable->var.name = strdup(name); // Dupliquer le nom de la variable
+        variable->var.name = strdup(name);
         variable->var.type = type;
     }
     return variable;
