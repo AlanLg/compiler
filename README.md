@@ -11,7 +11,7 @@
 - **Langage Cible** : Java
 - **Langage d'Implémentation** : **C**.
 
-### Fonctionnalités Implémentées
+## Fonctionnalités Implémentées
 
 - **Lexer** : Analyse lexicale complète pour identifier les mots-clés, les identificateurs, les nombres, et les symboles.
 - - **AST** : Fonctions pour gerer et creer l'AST.
