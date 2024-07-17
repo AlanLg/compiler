@@ -13,9 +13,9 @@ Ce projet est un compilateur simple conçu pour analyser et exécuter un langage
 
 ## Langages Utilisés
 
-- **Langage Source** : Langage de programmation spécifique utilisé pour écrire les fichiers source du programme (par exemple, un pseudo-langage avec des mots-clés comme `fonction`, `si`, `tantque`).
-- **Langage Cible** : Le compilateur ne génère pas de code machine ou de bytecode pour une machine cible spécifique, mais il génère un AST pour représenter la structure du programme.
-- **Langage d'Implémentation** : Le compilateur est entièrement implémenté en **C**.
+- **Langage Source** : Intech
+- **Langage Cible** : Java
+- **Langage d'Implémentation** : **C**.
   
 
 ## Fonctionnalités
