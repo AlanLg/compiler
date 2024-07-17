@@ -75,12 +75,9 @@ char *lexer_getalpha(buffer_t *buffer, error_list *errors) {
         char *result = malloc(idx + 1);
         if (result != NULL) {
             strcpy(result, ident);
-        } else {
-            add_error(errors, "Erreur : Allocation de memoire echouee dans lexer_getalpha.");
         }
         return result;
     } else {
-        add_error(errors, "Erreur : Identifiant non reconnu dans lexer_getalpha.");
         return "";
     }
 }

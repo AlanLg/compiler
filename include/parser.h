@@ -26,7 +26,7 @@ ast_t *analyze_function_body(buffer_t *buffer, error_list *errors);
 ast_t *analyze_declaration(buffer_t *buffer, error_list *errors, char *string);
 
 // Fonction d'analyse d'une instruction conditionnelle (si ... sinon si ... sinon ...)
-ast_t *analyze_conditional(buffer_t *buffer, error_list *errors);
+ast_t *analyze_conditional(buffer_t *buffer, error_list *errors, char *string);
 
 // Fonction d'analyse d'une boucle (tantque)
 ast_t *analyze_loop(buffer_t *buffer, error_list *errors);

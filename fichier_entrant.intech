@@ -1,3 +1,5 @@
 fonction main (entier test, bool fla) : rien {
-    entier c = 1 * 5 - 2;
+    si (1 > 2) {
+        entier b = 3;
+    }
 }

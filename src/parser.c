@@ -196,7 +196,7 @@ ast_list_t *analyze_statements(buffer_t *buffer, error_list *errors) {
             ast_list_add(&statements, declaration_ast);
         } else if (strcmp(next_keyword, "si") == 0) {
             // Analyser l'instruction conditionnelle
-            ast_t *conditional_ast = analyze_conditional(buffer, errors);
+            ast_t *conditional_ast = analyze_conditional(buffer, errors, next_keyword);
             if (!conditional_ast) {
                 add_error(errors, "Erreur lors de l'analyse de l'instruction conditionnelle");
                 return NULL;
@@ -284,9 +284,15 @@ ast_t *analyze_declaration(buffer_t *buffer, error_list *errors, char *type_name
 }
 
 // Analyse d'une instruction conditionnelle (si ... sinon si ... sinon ...)
-ast_t *analyze_conditional(buffer_t *buffer, error_list *errors) {
-    if (strcmp(lexer_getalpha(buffer, errors), "si") != 0) {
+ast_t *analyze_conditional(buffer_t *buffer, error_list *errors, char *next_keyword) {
+    if (strcmp(next_keyword, "si") != 0) {
         add_error(errors, "Mot-clé \"si\" manquant pour l'instruction conditionnelle");
+        return NULL;
+    }
+
+    // Vérifier la parenthèse ouvrante
+    if (lexer_getchar(buffer, errors) != '(') {
+        add_error(errors, "Parenthèse ouvrante manquante pour la condition de l'instruction conditionnelle");
         return NULL;
     }
 
@@ -294,6 +300,12 @@ ast_t *analyze_conditional(buffer_t *buffer, error_list *errors) {
     ast_t *condition = analyze_expression(buffer, errors);
     if (!condition) {
         add_error(errors, "Erreur lors de l'analyse de la condition de l'instruction conditionnelle");
+        return NULL;
+    }
+
+    // Vérifier la parenthèse fermante après la condition
+    if (lexer_getchar(buffer, errors) != ')') {
+        add_error(errors, "Parenthèse fermante manquante après la condition de l'instruction conditionnelle");
         return NULL;
     }
 
@@ -310,41 +322,57 @@ ast_t *analyze_conditional(buffer_t *buffer, error_list *errors) {
     // Analyser les éventuels "sinon si" et "sinon"
     while (true) {
         char *next_keyword = lexer_getalpha(buffer, errors);
+
         if (strcmp(next_keyword, "sinon") == 0) {
-            // Analyser le bloc d'instructions du "sinon"
-            ast_t *false_stmt = analyze_function_body(buffer, errors);
-            if (!false_stmt) {
-                add_error(errors, "Erreur lors de l'analyse du bloc d'instructions du \"sinon\"");
-                return NULL;
-            }
+            char *peek_keyword = lexer_getalpha(buffer, errors);
+            buf_rollback(buffer,
+                         strlen(peek_keyword)); // Revenir en arrière pour analyser le prochain mot-clé correctement
 
-            last_conditional->branch.invalid = ast_new_condition(NULL, false_stmt, NULL);
-            last_conditional = last_conditional->branch.invalid;
-        } else if (strcmp(next_keyword, "sinon") == 0 && strcmp(lexer_getalpha(buffer, errors), "si") == 0) {
-            // Analyser la condition du "sinon si"
-            ast_t *condition_elseif = analyze_expression(buffer, errors);
-            if (!condition_elseif) {
-                add_error(errors, "Erreur lors de l'analyse de la condition du \"sinon si\"");
-                return NULL;
-            }
+            if (strcmp(peek_keyword, "si") == 0) {
+                // Analyser la condition du "sinon si"
+                if (lexer_getchar(buffer, errors) != '(') {
+                    add_error(errors, "Parenthèse ouvrante manquante pour la condition du \"sinon si\"");
+                    return NULL;
+                }
+                ast_t *condition_elseif = analyze_expression(buffer, errors);
+                if (!condition_elseif) {
+                    add_error(errors, "Erreur lors de l'analyse de la condition du \"sinon si\"");
+                    return NULL;
+                }
+                if (lexer_getchar(buffer, errors) != ')') {
+                    add_error(errors, "Parenthèse fermante manquante après la condition du \"sinon si\"");
+                    return NULL;
+                }
 
-            // Analyser le bloc d'instructions du "sinon si"
-            ast_t *true_stmt_elseif = analyze_function_body(buffer, errors);
-            if (!true_stmt_elseif) {
-                add_error(errors, "Erreur lors de l'analyse du bloc d'instructions du \"sinon si\"");
-                return NULL;
-            }
+                // Analyser le bloc d'instructions du "sinon si"
+                ast_t *true_stmt_elseif = analyze_function_body(buffer, errors);
+                if (!true_stmt_elseif) {
+                    add_error(errors, "Erreur lors de l'analyse du bloc d'instructions du \"sinon si\"");
+                    return NULL;
+                }
 
-            last_conditional->branch.invalid = ast_new_condition(condition_elseif, true_stmt_elseif, NULL);
-            last_conditional = last_conditional->branch.invalid;
+                last_conditional->branch.invalid = ast_new_condition(condition_elseif, true_stmt_elseif, NULL);
+                last_conditional = last_conditional->branch.invalid;
+            } else {
+                // Analyser le bloc d'instructions du "sinon"
+                ast_t *false_stmt = analyze_function_body(buffer, errors);
+                if (!false_stmt) {
+                    add_error(errors, "Erreur lors de l'analyse du bloc d'instructions du \"sinon\"");
+                    return NULL;
+                }
+
+                last_conditional->branch.invalid = ast_new_condition(NULL, false_stmt, NULL);
+                last_conditional = last_conditional->branch.invalid;
+            }
         } else {
-            buf_rollback(buffer, strlen(next_keyword));
+            buf_rollback(buffer, 1);
             break;
         }
     }
 
     return current_conditional;
 }
+
 
 // Analyse d'une boucle (tantque)
 ast_t *analyze_loop(buffer_t *buffer, error_list *errors) {
@@ -375,11 +403,6 @@ ast_t *analyze_loop(buffer_t *buffer, error_list *errors) {
 
 // Analyse d'une expression
 ast_t *analyze_expression(buffer_t *buffer, error_list *errors) {
-    // Ici, vous devrez implémenter l'analyse des expressions comme les opérations arithmétiques, les appels de fonctions, etc.
-    // Cette partie dépendra de la syntaxe et de la sémantique précises de votre langage Intech.
-    // Vous pouvez utiliser ast_new_binary, ast_new_unary, ast_new_variable, etc., pour créer les nœuds AST appropriés.
-    // Pour l'instant, je vais laisser cette partie comme étant une fonction factice.
-
     string_stack_t operator_stack;
     string_stack_initialize(&operator_stack);
 
@@ -403,7 +426,7 @@ ast_t *analyze_expression(buffer_t *buffer, error_list *errors) {
         const char next = lexer_getchar(buffer, errors);
 
         buf_rollback_and_unlock(buffer, 1);
-        if (next == ';') {
+        if (next == ';' || next == ')') {
             break;
         }
 

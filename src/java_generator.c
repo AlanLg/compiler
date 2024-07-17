@@ -90,16 +90,29 @@ void generate_java_code(ast_t *node, FILE *output) {
             fprintf(output, "}\n");
             break;
         case AST_COMPOUND_STATEMENT:
-            stmts = node->compound_stmt.stmts; // Initialize stmt properly
+            stmts = node->compound_stmt.stmts;
             while (stmts) {
                 fprintf(output, "    ");
                 generate_java_code(stmts->current, output);
-                if (stmts->current->type != AST_DECLARATION) {
-                    fprintf(output, ";\n    ");
+                if (stmts->current->type != AST_DECLARATION && stmts->current->type != AST_COMPOUND_STATEMENT &&
+                    stmts->current->type != AST_CONDITION) {
+                    fprintf(output, ";\n");
                 } else {
                     fprintf(output, "\n");
                 }
                 stmts = stmts->next;
+            }
+            break;
+        case AST_CONDITION:
+            fprintf(output, "if (");
+            generate_java_code(node->branch.condition, output);
+            fprintf(output, ") {\n    ");
+            generate_java_code(node->branch.valid, output);
+            fprintf(output, "\n    }");
+            if (node->branch.invalid) {
+                fprintf(output, " else {\n    ");
+                generate_java_code(node->branch.invalid, output);
+                fprintf(output, "\n}");
             }
             break;
         default:
@@ -107,7 +120,6 @@ void generate_java_code(ast_t *node, FILE *output) {
             break;
     }
 }
-
 
 void parse_and_generate(buffer_t *buffer, error_list *errors, const char *output_file) {
     FILE *output = fopen(output_file, "w");
@@ -125,7 +137,6 @@ void parse_and_generate(buffer_t *buffer, error_list *errors, const char *output
         return;
     }
 
-    // Générer le code Java pour chaque fonction analysée
     symbol_t *current_function = table;
     while (current_function) {
         generate_java_code(current_function->ast_node, output);
