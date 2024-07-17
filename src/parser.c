@@ -417,6 +417,7 @@ ast_t *analyze_expression(buffer_t *buffer, error_list *errors) {
         if (string_stack_is_empty(&operator_stack)) {
             string_stack_push(&operator_stack, operator);
         } else {
+            string_stack_push(&operator_stack, operator);
             char *pop = string_stack_pop(&operator_stack);
 
             ast_t* binary = ast_new_binary(ast_get_binary_from_string(pop), NULL, NULL);

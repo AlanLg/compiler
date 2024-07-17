@@ -1,3 +1,3 @@
 fonction main (entier test, bool fla) : rien {
-    entier c = 1 - 5 * 2;
+    entier c = 1 * 5 - 2;
 }
