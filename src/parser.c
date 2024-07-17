@@ -173,13 +173,6 @@ ast_list_t *analyze_statements(buffer_t *buffer, error_list *errors) {
                 return NULL;
             }
             ast_list_add(&statements, conditional_ast);
-        } else if (strcmp(next_keyword, "tantque") == 0) {
-            ast_t *loop_ast = analyze_loop(buffer, errors);
-            if (!loop_ast) {
-                add_error(errors, "Erreur lors de l'analyse de l'instruction de boucle");
-                return NULL;
-            }
-            ast_list_add(&statements, loop_ast);
         } else {
             add_error(errors, "Mot-clé d'instruction invalide");
             return NULL;
@@ -249,7 +242,6 @@ ast_t *analyze_conditional(buffer_t *buffer, error_list *errors, char *next_keyw
         return NULL;
     }
 
-    // Vérifier la parenthèse ouvrante
     if (lexer_getchar(buffer, errors) != '(') {
         add_error(errors, "Parenthèse ouvrante manquante pour la condition de l'instruction conditionnelle");
         return NULL;
@@ -280,11 +272,8 @@ ast_t *analyze_conditional(buffer_t *buffer, error_list *errors, char *next_keyw
 
         if (strcmp(next_keyword, "sinon") == 0) {
             char *peek_keyword = lexer_getalpha(buffer, errors);
-            buf_rollback(buffer,
-                         strlen(peek_keyword)); // Revenir en arrière pour analyser le prochain mot-clé correctement
 
             if (strcmp(peek_keyword, "si") == 0) {
-                // Analyser la condition du "sinon si"
                 if (lexer_getchar(buffer, errors) != '(') {
                     add_error(errors, "Parenthèse ouvrante manquante pour la condition du \"sinon si\"");
                     return NULL;
@@ -308,7 +297,7 @@ ast_t *analyze_conditional(buffer_t *buffer, error_list *errors, char *next_keyw
                 last_conditional->branch.invalid = ast_new_condition(condition_elseif, true_stmt_elseif, NULL);
                 last_conditional = last_conditional->branch.invalid;
             } else {
-                // Analyser le bloc d'instructions du "sinon"
+                buf_rollback(buffer, 1);
                 ast_t *false_stmt = analyze_function_body(buffer, errors);
                 if (!false_stmt) {
                     add_error(errors, "Erreur lors de l'analyse du bloc d'instructions du \"sinon\"");
@@ -327,7 +316,7 @@ ast_t *analyze_conditional(buffer_t *buffer, error_list *errors, char *next_keyw
     return current_conditional;
 }
 
-
+/*
 ast_t *analyze_loop(buffer_t *buffer, error_list *errors) {
     if (strcmp(lexer_getalpha(buffer, errors), "tantque") != 0) {
         add_error(errors, "Mot-clé \"tantque\" manquant pour l'instruction de boucle");
@@ -350,6 +339,7 @@ ast_t *analyze_loop(buffer_t *buffer, error_list *errors) {
 
     return loop_ast;
 }
+*/
 
 ast_t *analyze_expression(buffer_t *buffer, error_list *errors) {
     string_stack_t operator_stack;
@@ -358,7 +348,7 @@ ast_t *analyze_expression(buffer_t *buffer, error_list *errors) {
     ast_stack_t output_stack;
     ast_stack_initialize(&output_stack);
 
-    while(true) {
+    while (true) {
         char number = *lexer_getnumber(buffer, errors);
 
         if (strcmp(&number, "\0") == 0) {

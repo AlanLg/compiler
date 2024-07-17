@@ -1,5 +1,8 @@
 fonction main (entier test, bool fla) : rien {
+    entier a = 1;
     si (1 > 2) {
-        entier b = 3;
+        entier b = 2;
+    } sinon si (4 > 3) {
+        entier c = 3;
     }
 }

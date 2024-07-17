@@ -18,7 +18,6 @@ void string_stack_push(string_stack_t *stack, char* value) {
         return;
     }
     stack->arr[++stack->top] = strdup(value);
-    printf("Pushed %s onto the stack\n", value);
 }
 
 char* string_stack_pop(string_stack_t *stack) {
@@ -28,7 +27,6 @@ char* string_stack_pop(string_stack_t *stack) {
     }
     char* popped = stack->arr[stack->top];
     stack->top--;
-    printf("Popped %s from the stack\n", popped);
     return popped;
 }
 

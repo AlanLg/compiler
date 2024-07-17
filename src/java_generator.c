@@ -87,7 +87,7 @@ void generate_java_code(ast_t *node, FILE *output) {
             }
             fprintf(output, ") {\n");
             generate_java_code(node->function.stmts->current, output);
-            fprintf(output, "}\n");
+            fprintf(output, "\n}");
             break;
         case AST_COMPOUND_STATEMENT:
             stmts = node->compound_stmt.stmts;
@@ -96,9 +96,7 @@ void generate_java_code(ast_t *node, FILE *output) {
                 generate_java_code(stmts->current, output);
                 if (stmts->current->type != AST_DECLARATION && stmts->current->type != AST_COMPOUND_STATEMENT &&
                     stmts->current->type != AST_CONDITION) {
-                    fprintf(output, ";\n");
-                } else {
-                    fprintf(output, "\n");
+                    fprintf(output, ";");
                 }
                 stmts = stmts->next;
             }
@@ -110,9 +108,14 @@ void generate_java_code(ast_t *node, FILE *output) {
             generate_java_code(node->branch.valid, output);
             fprintf(output, "\n    }");
             if (node->branch.invalid) {
-                fprintf(output, " else {\n    ");
-                generate_java_code(node->branch.invalid, output);
-                fprintf(output, "\n}");
+                if (node->branch.invalid->type == AST_CONDITION) {
+                    fprintf(output, " else ");
+                    generate_java_code(node->branch.invalid, output);
+                } else {
+                    fprintf(output, " else {\n    ");
+                    generate_java_code(node->branch.invalid, output);
+                    fprintf(output, "\n}");
+                }
             }
             break;
         default:
