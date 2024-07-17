@@ -1,5 +1,6 @@
 # COMPILER
 
+
 ## Description
 
 Ce projet est un compilateur simple conçu pour analyser et exécuter un langage de programmation spécifique. Le compilateur lit un fichier source, analyse sa syntaxe et sa structure, et génère un arbre de syntaxe abstraite (AST) pour représenter le programme. Ce projet comprend les composants suivants :
@@ -9,6 +10,7 @@ Ce projet est un compilateur simple conçu pour analyser et exécuter un langage
 - **AST (Abstract Syntax Tree)** : Représentation arborescente des instructions du programme.
 - **Buffer** : Gestion du tampon pour la lecture efficace des fichiers.
 
+
 ## Fonctionnalités
 
 - **Analyse lexicale** : Transformation du texte source en tokens.
@@ -16,6 +18,7 @@ Ce projet est un compilateur simple conçu pour analyser et exécuter un langage
 - **Gestion des erreurs** : Détection et rapport des erreurs de syntaxe et de structure.
 - **Support des fonctions** : Analyse des déclarations et des corps de fonctions.
 - **Support des structures de contrôle** : Analyse des branches conditionnelles et des boucles.
+
 
 ## Structure du Projet
 
@@ -45,10 +48,12 @@ project_root/
 │
 └── Makefile # Script de compilation Makefile
 
+
 ## Prérequis
 
 - Un compilateur C (par exemple, `gcc`).
 - CMake (optionnel, si vous utilisez un fichier CMake pour la compilation).
+
 
 ## Compilation et Exécution
 
@@ -59,8 +64,40 @@ project_root/
    gcc -o compiler src/main.c src/buffer.c src/lexer.c src/parser.c src/ast.c src/symbol.c src/errors.c -Iinclude
 
 2. **Exécution** :
-  
+   ```sh
+   ./compiler tests/test.intech
+
+### Utilisation de Makefile
+
+1. **Compilation** :
+   ```sh
+   make
+
+2. **Exécution** :
+   ```sh
+   ./compiler tests/test.intech
+
+
+## Exemple de Fichier Source
+
+Voici un exemple de fichier source (test.intech) que vous pouvez utiliser pour tester le compilateur :
+   ```plaintext
+   fonction main {
+       int x = 10;
+       si (x > 5) {
+           x = x + 1;
+       }
+       tantque (x < 15) {
+           x = x - 1;
+       }
+   }
+
+## Exemple de Fichier Source
 
 
 
-   
+
+
+
+
+
