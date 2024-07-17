@@ -160,6 +160,7 @@ char *lexer_getnumber(buffer_t *buffer, error_list *errors) {
         strcpy(result, number);
     } else {
         add_error(errors, "Erreur : Allocation de memoire echouee dans lexer_getnumber.");
+        return NULL;
     }
 
     return result;

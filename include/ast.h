@@ -28,6 +28,7 @@ typedef enum {
   AST_SUBSTRACTION,
   AST_MULTIPLICATION,
   AST_DIVISION,
+  AST_UNKNOWN,
 } ast_binary_e;
 
 typedef enum {
@@ -136,5 +137,6 @@ ast_t *ast_new_return(ast_t *expr);
 ast_list_t *ast_list_new_node(ast_t *elem);
 ast_list_t *ast_list_add(ast_list_t **list, ast_t *elem);
 var_type_e get_var_type_from_string(const char* var_type_string);
+ast_binary_e ast_get_binary_from_string(const char *operator);
 
 #endif

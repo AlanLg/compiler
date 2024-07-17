@@ -265,10 +265,10 @@ ast_t *analyze_declaration(buffer_t *buffer, error_list *errors, char *type_name
         }
 
         // Créer un nœud AST pour l'assignation de variable
-        ast_t *assign_ast = ast_new_assignment(ast_new_variable(var_name, type), value_ast);
+        ast_t *expression = value_ast;
 
         // Mettre à jour le nœud AST de la déclaration de variable
-        var_decl_ast->declaration.rvalue = assign_ast;
+        var_decl_ast->declaration.rvalue = expression;
 
         // Vérifier le point-virgule à la fin de la déclaration
         if (lexer_getchar(buffer, errors) != ';') {
@@ -380,8 +380,73 @@ ast_t *analyze_expression(buffer_t *buffer, error_list *errors) {
     // Vous pouvez utiliser ast_new_binary, ast_new_unary, ast_new_variable, etc., pour créer les nœuds AST appropriés.
     // Pour l'instant, je vais laisser cette partie comme étant une fonction factice.
 
-    // Exemple factice :
-    ast_t *dummy_expr = ast_new_integer(42);
-    return dummy_expr;
+    string_stack_t operator_stack;
+    string_stack_initialize(&operator_stack);
+
+    ast_stack_t output_stack;
+    ast_stack_initialize(&output_stack);
+
+    while(true) {
+        char number = *lexer_getnumber(buffer, errors);
+
+        if (strcmp(&number, "\0") == 0) {
+            add_error(errors, "invalid number found in expression");
+            break;
+        }
+
+        int number_as_int = atoi(&number);
+        ast_t *number_as_ast = ast_new_integer(number_as_int);
+        ast_stack_push(&output_stack, number_as_ast);
+
+        buf_lock(buffer);
+
+        const char next = lexer_getchar(buffer, errors);
+
+        buf_rollback_and_unlock(buffer, 1);
+        if (next == ';') {
+            break;
+        }
+
+        char* operator = lexer_getoperator(buffer, errors);
+
+        if (operator == NULL) {
+            add_error(errors, "invalid operator found in expression");
+            break;
+        }
+
+        if (string_stack_is_empty(&operator_stack)) {
+            string_stack_push(&operator_stack, operator);
+        } else {
+            char *pop = string_stack_pop(&operator_stack);
+
+            ast_t* binary = ast_new_binary(ast_get_binary_from_string(pop), NULL, NULL);
+
+            ast_stack_push(&output_stack, binary);
+        }
+    }
+
+    while (!string_stack_is_empty(&operator_stack)) {
+        const char *pop = string_stack_pop(&operator_stack);
+        ast_t* binary = ast_new_binary(ast_get_binary_from_string(pop), NULL, NULL);
+        ast_stack_push(&output_stack, binary);
+    }
+    ast_t* stack_to_ast = ast_stack_to_ast(&output_stack);
+
+    return stack_to_ast;
 }
 
+ast_t* ast_stack_to_ast(ast_stack_t *stack) {
+    if (ast_stack_is_empty(stack)) {
+        return NULL;
+    }
+    ast_t* current = ast_stack_pop(stack);
+    if (current->type == AST_BINARY) {
+        if (current->binary.right == NULL) {
+            current->binary.right = ast_stack_to_ast(stack);
+        }
+        if (current->binary.left == NULL) {
+            current->binary.left = ast_stack_to_ast(stack);
+        }
+    }
+    return current;
+}

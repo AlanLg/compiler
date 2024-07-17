@@ -151,3 +151,32 @@ ast_list_t *ast_list_add(ast_list_t **list, ast_t *elem) {
     return new_ast_list;
 }
 
+ast_binary_e ast_get_binary_from_string(const char *operator) {
+    if (strcmp(operator, "==") == 0) {
+        return AST_EQUAL_TO;
+    } else if (strcmp(operator, "!=") == 0) {
+        return AST_NOT_EQUAL_TO;
+    } else if (strcmp(operator, ">") == 0) {
+        return AST_GREATER_THAN;
+    } else if (strcmp(operator, "<") == 0) {
+        return AST_LESS_THAN;
+    } else if (strcmp(operator, ">=") == 0) {
+        return AST_GREATER_THAN_OR_EQUAL_TO;
+    } else if (strcmp(operator, "<=") == 0) {
+        return AST_LESS_THAN_OR_EQUAL_TO;
+    } else if (strcmp(operator, "&&") == 0) {
+        return AST_LOGICAL_AND;
+    } else if (strcmp(operator, "||") == 0) {
+        return AST_LOGICAL_OR;
+    } else if (strcmp(operator, "+") == 0) {
+        return AST_ADDITION;
+    } else if (strcmp(operator, "-") == 0) {
+        return AST_SUBSTRACTION;
+    } else if (strcmp(operator, "*") == 0) {
+        return AST_MULTIPLICATION;
+    } else if (strcmp(operator, "/") == 0) {
+        return AST_DIVISION;
+    } else {
+        return AST_UNKNOWN;
+    }
+}

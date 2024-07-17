@@ -13,6 +13,8 @@ add_executable(compiler
         include/ast.h
         include/errors.h
         include/utils.h
+        include/java_generator.h
+        include/stack.h
         src/buffer.c
         src/lexer.c
         src/main.c
@@ -22,4 +24,4 @@ add_executable(compiler
         src/parser.c
         src/errors.c
         src/java_generator.c
-        include/java_generator.h)
+        src/stack.c)
